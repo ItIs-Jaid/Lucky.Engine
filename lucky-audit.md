@@ -524,3 +524,390 @@
 - Environment
 **Total Tokens:** 0
 ---
+
+### Entry 2026-10-11T15:36:38.607259
+**Query:** "What is my move plan?"
+**Intent:** relocation
+**Loaded Nodes:**
+- Move Plan (SSOT) [confidence: 0.85]
+- Move Plan (Live Mirror) [confidence: 0.85]
+- Move Plan (Live User) [confidence: 0.85]
+- Move Target [confidence: 0.85]
+- Liabilities [confidence: 0.60]
+**Excluded:**
+- Audit Buckets (Convention)
+- Preferences
+- Traits
+- Audit Buckets (SSOT)
+- Environment
+**Total Tokens:** 1320
+---
+
+### Entry 2026-10-11T15:36:38.621402
+**Query:** "What is my move plan?"
+**Intent:** relocation
+**Loaded Nodes:**
+- Move Plan (SSOT) [confidence: 0.85]
+- Move Plan (Live Mirror) [confidence: 0.85]
+- Move Plan (Live User) [confidence: 0.85]
+- Move Target [confidence: 0.85]
+- Liabilities [confidence: 0.60]
+**Excluded:**
+- Audit Buckets (Convention)
+- Preferences
+- Traits
+- Audit Buckets (SSOT)
+- Environment
+**Total Tokens:** 1320
+---
+
+### Entry 2026-10-11T15:36:38.638479
+**Query:** "What are my finances?"
+**Intent:** financial
+**Loaded Nodes:**
+- Finances (Live Mirror) [confidence: 0.85]
+- Move Fund [confidence: 0.85]
+- Income Bridge (SSOT) [confidence: 0.85]
+- Move Fund (SSOT) [confidence: 0.85]
+- Income Bridge [confidence: 0.85]
+**Excluded:**
+- Audit Buckets (Convention)
+- Preferences
+- Traits
+- Audit Buckets (SSOT)
+- Environment
+**Total Tokens:** 1300
+---
+
+### Entry 2026-10-11T15:37:13.370158
+**Query:** "What is my move plan?"
+**Intent:** relocation
+**Loaded Nodes:**
+- Move Plan (SSOT) [confidence: 0.85]
+- Move Plan (Live Mirror) [confidence: 0.85]
+- Move Plan (Live User) [confidence: 0.85]
+- Move Target [confidence: 0.85]
+- Liabilities [confidence: 0.60]
+**Excluded:**
+- Audit Buckets (Convention)
+- Preferences
+- Traits
+- Audit Buckets (SSOT)
+- Environment
+**Total Tokens:** 1320
+---
+
+### Entry 2026-10-11T15:37:13.386591
+**Query:** "What is my move plan?"
+**Intent:** relocation
+**Loaded Nodes:**
+- Move Plan (SSOT) [confidence: 0.85]
+- Move Plan (Live Mirror) [confidence: 0.85]
+- Move Plan (Live User) [confidence: 0.85]
+- Move Target [confidence: 0.85]
+- Liabilities [confidence: 0.60]
+**Excluded:**
+- Audit Buckets (Convention)
+- Preferences
+- Traits
+- Audit Buckets (SSOT)
+- Environment
+**Total Tokens:** 1320
+---
+
+### Entry 2026-10-11T15:37:13.407751
+**Query:** "What are my finances?"
+**Intent:** financial
+**Loaded Nodes:**
+- Finances (Live Mirror) [confidence: 0.85]
+- Move Fund [confidence: 0.85]
+- Income Bridge (SSOT) [confidence: 0.85]
+- Move Fund (SSOT) [confidence: 0.85]
+- Income Bridge [confidence: 0.85]
+**Excluded:**
+- Audit Buckets (Convention)
+- Preferences
+- Traits
+- Audit Buckets (SSOT)
+- Environment
+**Total Tokens:** 1300
+---
+
+### Entry 2026-10-11T15:37:37.941003
+**Query:** "What is my move plan?"
+**Intent:** relocation
+**Loaded Nodes:**
+- Move Plan (SSOT) [confidence: 0.85]
+- Move Plan (Live Mirror) [confidence: 0.85]
+- Move Plan (Live User) [confidence: 0.85]
+- Move Target [confidence: 0.85]
+- Liabilities [confidence: 0.60]
+**Excluded:**
+- Audit Buckets (Convention)
+- Preferences
+- Traits
+- Audit Buckets (SSOT)
+- Environment
+**Total Tokens:** 1320
+---
+
+### Entry 2026-10-11T15:37:37.958045
+**Query:** "What is my move plan?"
+**Intent:** relocation
+**Loaded Nodes:**
+- Move Plan (SSOT) [confidence: 0.85]
+- Move Plan (Live Mirror) [confidence: 0.85]
+- Move Plan (Live User) [confidence: 0.85]
+- Move Target [confidence: 0.85]
+- Liabilities [confidence: 0.60]
+**Excluded:**
+- Audit Buckets (Convention)
+- Preferences
+- Traits
+- Audit Buckets (SSOT)
+- Environment
+**Total Tokens:** 1320
+---
+
+### Entry 2026-10-11T15:37:37.976089
+**Query:** "What are my finances?"
+**Intent:** financial
+**Loaded Nodes:**
+- Finances (Live Mirror) [confidence: 0.85]
+- Move Fund [confidence: 0.85]
+- Income Bridge (SSOT) [confidence: 0.85]
+- Move Fund (SSOT) [confidence: 0.85]
+- Income Bridge [confidence: 0.85]
+**Excluded:**
+- Audit Buckets (Convention)
+- Preferences
+- Traits
+- Audit Buckets (SSOT)
+- Environment
+**Total Tokens:** 1300
+---
+
+### Entry 2026-10-11T15:38:00.386448
+**Query:** "What is my move plan?"
+**Intent:** relocation
+**Loaded Nodes:**
+- Move Plan (SSOT) [confidence: 0.85]
+- Move Plan (Live Mirror) [confidence: 0.85]
+- Move Plan (Live User) [confidence: 0.85]
+- Move Target [confidence: 0.85]
+- Liabilities [confidence: 0.60]
+**Excluded:**
+- Audit Buckets (Convention)
+- Preferences
+- Traits
+- Audit Buckets (SSOT)
+- Environment
+**Total Tokens:** 1320
+---
+
+### Entry 2026-10-11T15:38:00.402980
+**Query:** "What is my move plan?"
+**Intent:** relocation
+**Loaded Nodes:**
+- Move Plan (SSOT) [confidence: 0.85]
+- Move Plan (Live Mirror) [confidence: 0.85]
+- Move Plan (Live User) [confidence: 0.85]
+- Move Target [confidence: 0.85]
+- Liabilities [confidence: 0.60]
+**Excluded:**
+- Audit Buckets (Convention)
+- Preferences
+- Traits
+- Audit Buckets (SSOT)
+- Environment
+**Total Tokens:** 1320
+---
+
+### Entry 2026-10-11T15:38:00.420231
+**Query:** "What are my finances?"
+**Intent:** financial
+**Loaded Nodes:**
+- Finances (Live Mirror) [confidence: 0.85]
+- Move Fund [confidence: 0.85]
+- Income Bridge (SSOT) [confidence: 0.85]
+- Move Fund (SSOT) [confidence: 0.85]
+- Income Bridge [confidence: 0.85]
+**Excluded:**
+- Audit Buckets (Convention)
+- Preferences
+- Traits
+- Audit Buckets (SSOT)
+- Environment
+**Total Tokens:** 1300
+---
+
+### Entry 2026-10-11T15:38:18.449973
+**Query:** "What is my move plan?"
+**Intent:** relocation
+**Loaded Nodes:**
+- Move Plan (SSOT) [confidence: 0.85]
+- Move Plan (Live Mirror) [confidence: 0.85]
+- Move Plan (Live User) [confidence: 0.85]
+- Move Target [confidence: 0.85]
+**Excluded:**
+- Audit Buckets (Convention)
+- Preferences
+- Traits
+- Audit Buckets (SSOT)
+- Environment
+**Total Tokens:** 1110
+---
+
+### Entry 2026-10-11T15:38:18.464781
+**Query:** "What is my move plan?"
+**Intent:** relocation
+**Loaded Nodes:**
+- Move Plan (SSOT) [confidence: 0.85]
+- Move Plan (Live Mirror) [confidence: 0.85]
+- Move Plan (Live User) [confidence: 0.85]
+- Move Target [confidence: 0.85]
+**Excluded:**
+- Audit Buckets (Convention)
+- Preferences
+- Traits
+- Audit Buckets (SSOT)
+- Environment
+**Total Tokens:** 1110
+---
+
+### Entry 2026-10-11T15:38:18.478928
+**Query:** "What are my finances?"
+**Intent:** financial
+**Loaded Nodes:**
+- Finances (Live Mirror) [confidence: 0.85]
+- Move Fund [confidence: 0.85]
+- Income Bridge (SSOT) [confidence: 0.85]
+- Move Fund (SSOT) [confidence: 0.85]
+- Income Bridge [confidence: 0.85]
+**Excluded:**
+- Audit Buckets (Convention)
+- Preferences
+- Traits
+- Audit Buckets (SSOT)
+- Environment
+**Total Tokens:** 1300
+---
+
+### Entry 2026-10-11T15:42:25.136670
+**Query:** "finances"
+**Intent:** financial
+**Loaded Nodes:**
+- Finances (Live Mirror) [confidence: 0.95]
+**Excluded:**
+- Audit Buckets (Convention)
+- Preferences
+- Traits
+- Audit Buckets (SSOT)
+- Environment
+**Total Tokens:** 320
+---
+
+### Entry 2026-10-11T15:42:33.136665
+**Query:** "finances"
+**Intent:** financial
+**Loaded Nodes:**
+- Finances (Live Mirror) [confidence: 0.95]
+**Excluded:**
+- Audit Buckets (Convention)
+- Preferences
+- Traits
+- Audit Buckets (SSOT)
+- Environment
+**Total Tokens:** 320
+---
+
+### Entry 2026-10-11T15:42:33.557493
+**Query:** "finances"
+**Intent:** financial
+**Loaded Nodes:**
+- Finances (Live Mirror) [confidence: 0.95]
+**Excluded:**
+- Audit Buckets (Convention)
+- Preferences
+- Traits
+- Audit Buckets (SSOT)
+- Environment
+**Total Tokens:** 320
+---
+
+### Entry 2026-10-11T15:42:36.414135
+**Query:** "finances"
+**Intent:** financial
+**Loaded Nodes:**
+- Finances (Live Mirror) [confidence: 0.95]
+**Excluded:**
+- Audit Buckets (Convention)
+- Preferences
+- Traits
+- Audit Buckets (SSOT)
+- Environment
+**Total Tokens:** 320
+---
+
+### Entry 2026-10-11T15:42:39.221962
+**Query:** "finances"
+**Intent:** financial
+**Loaded Nodes:**
+- Finances (Live Mirror) [confidence: 0.95]
+**Excluded:**
+- Audit Buckets (Convention)
+- Preferences
+- Traits
+- Audit Buckets (SSOT)
+- Environment
+**Total Tokens:** 320
+---
+
+### Entry 2026-10-11T15:42:39.422618
+**Query:** "finances"
+**Intent:** financial
+**Loaded Nodes:**
+- Finances (Live Mirror) [confidence: 0.95]
+**Excluded:**
+- Audit Buckets (Convention)
+- Preferences
+- Traits
+- Audit Buckets (SSOT)
+- Environment
+**Total Tokens:** 320
+---
+
+### Entry 2026-10-11T15:42:41.745512
+**Query:** "What is my move plan?"
+**Intent:** relocation
+**Loaded Nodes:**
+- Move Plan (SSOT) [confidence: 0.85]
+- Move Plan (Live Mirror) [confidence: 0.85]
+- Move Plan (Live User) [confidence: 0.85]
+- Move Target [confidence: 0.85]
+**Excluded:**
+- Audit Buckets (Convention)
+- Preferences
+- Traits
+- Audit Buckets (SSOT)
+- Environment
+**Total Tokens:** 1110
+---
+
+### Entry 2026-10-11T15:42:41.763582
+**Query:** "What are my finances?"
+**Intent:** financial
+**Loaded Nodes:**
+- Finances (Live Mirror) [confidence: 0.85]
+- Move Fund [confidence: 0.85]
+- Income Bridge (SSOT) [confidence: 0.85]
+- Move Fund (SSOT) [confidence: 0.85]
+- Income Bridge [confidence: 0.85]
+**Excluded:**
+- Audit Buckets (Convention)
+- Preferences
+- Traits
+- Audit Buckets (SSOT)
+- Environment
+**Total Tokens:** 1300
+---

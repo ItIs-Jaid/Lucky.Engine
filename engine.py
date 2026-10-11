@@ -9,9 +9,10 @@ from pathlib import Path
 from datetime import datetime
 import re
 import os
+from cache import cache
 
 # Paths
-BASE = Path("C:/Users/<your-name>/<your-project>")
+BASE = Path("REDACTED_LOCAL_PATH")
 BRIDGE = BASE / "memory" / "graphify-out" / "bridge"
 MEMORY_GRAPH = BASE / "memory" / "graphify-out" / "graph.json"
 AUDIT_LOG = BRIDGE / "lucky-audit.md"
@@ -288,6 +289,12 @@ def resolve_query(query: str, budget: int = None, edge_limit: int = 3) -> dict:
     config = load_config()
     budget = budget or config.get("default_budget", 500)
     
+    # Check cache first (skip for edge traversal to avoid stale context)
+    cache_key = f"query:{query}:{budget}:edge{edge_limit}"
+    cached = cache.get(cache_key)
+    if cached and edge_limit == 0:
+        return cached
+    
     intent = extract_intent(query)
     bridge = load_bridge()
     graph = load_memory_graph()
@@ -328,12 +335,19 @@ def resolve_query(query: str, budget: int = None, edge_limit: int = 3) -> dict:
     excluded = [n for n in graph.get("nodes", []) if n.get("id") not in [m["id"] for m in matched]]
     write_audit(query, intent, matched, excluded, estimated)
     
-    return {
+    result = {
         "nodes": matched,
         "budget_used": estimated,
         "intent": intent,
         "edge_followed_count": edges_followed,
     }
+    
+    # Cache result (only when edge traversal is disabled)
+    if edge_limit == 0:
+        cache.set(cache_key, result)
+    
+    return result
+    
 
 
 if __name__ == "__main__":
