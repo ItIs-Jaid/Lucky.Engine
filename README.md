@@ -6,11 +6,41 @@
 > **A Note from the Creator:**
 > "I'm trying to vibe my way to more effective local agents. I truly don't understand what exactly I'm building but want to share in case I'm building something of value that could help someone else. Always eager to learn and welcome any feedback :3"
 
+## Table of Contents
+
+- [What It Does](#what-it-does)
+- [Quick Start & Installation](#quick-start--installation)
+- [Query Patterns](#query-patterns)
+- [Performance Benchmarks](#performance-benchmarks)
+- [Examples & Templates](#examples--templates)
+- [Extending](#extending)
+
 **Location:** `<your-project>/memory/graphify-out/bridge/`
 
 ## What It Does
 
 Lucky.Engine intelligently loads only the relevant memory and skills context for each query, reducing token usage from ~3-8k to ~300-500 per query.
+
+## Quick Start & Installation
+
+### Installation Script (Linux/Mac)
+```bash
+./install.sh
+```
+
+### Manual Setup (Windows)
+1. Clone the repository
+2. Copy example files:
+```powershell
+Copy-Item examples\example-config.yaml .\lucky-config.yaml
+Copy-Item examples\example-USER.md .\USER.md
+Copy-Item examples\example-MEMORY-SSOT.md .\MEMORY-SSOT.md
+```
+
+### Run Tests
+```bash
+python test_suite.py
+```
 
 ## Purpose
 
@@ -59,9 +89,29 @@ graphify query "finances AND move" --budget 800
 ```
 
 > **Note from Creator:**
-> "using the example of moving because all of my agentic projects are intended to be tasks you want to delegate in your life so you can focus on what makes life fun as opposed to taking fun tasks and trying to make them perfect i want the annoying tasks out of the way"
+> "using the example of moving because all of my agentic projects are intended to be tasks you want to delegate in your life so you can focus on what makes life fun as opposed to taking fun tasks and trying to make them perfect. i want the annoying tasks out of the way"
 
+## Performance Benchmarks
 
+### Latency by Graph Size
+```mermaid
+xychart-beta
+    title "Query Latency (ms) vs Graph Size"
+    x-axis [34, 100, 500, 1000, 2000, 5000]
+    y-axis "Milliseconds (ms)" 0 --> 600
+    line [54, 60, 100, 150, 250, 550]
+```
+
+### Token Usage by Query Type
+```mermaid
+barChart
+    title "Token Usage per Query"
+    x-axis [finances, move plan, ssh, memory structure]
+    y-axis "Tokens" 0 --> 1600
+    bar [320, 1300, 320, 1550]
+```
+
+See **[BENCHMARKS.md](BENCHMARKS.md)** for detailed stress tests and scaling guidelines.
 
 ## Benefits
 
