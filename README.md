@@ -78,6 +78,17 @@ cp examples/example-MEMORY-SSOT.md MEMORY-SSOT.md
 
 See `examples/QUICKSTART.md` for setup details.
 
+## Alternate Uses
+
+**Batch queries:**
+Need to check finances, calendar, and tasks before you leave the house? Run a small script that hits all three and merges the results.
+
+**Automation:**
+Toss it in a shell script or cron job to pull today's priorities at 9 AM.
+
+**Debugging:**
+Agent getting lost? Run queries against your memory to see if the context was actually there.
+
 ## How to Use
 
 1. **For memory:** `graphify query "X" --budget 500`
