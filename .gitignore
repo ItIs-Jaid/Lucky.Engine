@@ -27,3 +27,8 @@ __pycache__/
 ## Logs
 *.log
 logs/
+
+## Live/generated data (local only, never commit)
+lucky-audit.md
+benchmark_results.json
+stress_test_results.json

@@ -11,7 +11,7 @@
 | `benchmark.py` | Tools | ✅ Performance testing |
 | `bridge_nodes.json` | Data | ✅ Skill→memory mappings |
 | `lucky-config.yaml` | Config | ✅ Template config |
-| `lucky-audit.md` | Data | ✅ Audit log |
+| `lucky-audit.md` | Data | 🔒 Local-only (gitignored, live log) |
 | `.gitignore` | Config | ✅ Prevents leaks |
 | `README.md` | Docs | ✅ Quick reference |
 | `reference.md` | Docs | ✅ Full docs |
@@ -32,10 +32,11 @@
 
 ## 🔒 Security Status
 
-- [x] **PII/SPii Scan Complete** - No leaks found
-- [x] **All Files Cleaned** - Private paths replaced
-- [x] **.gitignore Created** - Prevents data leaks
-- [x] **Audit Log Clean** - Generic examples only
+- [x] **Secret scan** - No API keys, tokens, private keys, or credentials in tracked files or git history
+- [x] **Personal-path scan** - Hardcoded local path removed from `engine.py` (now derives from `__file__`); all other files use placeholders
+- [x] **Live data gitignored** - `lucky-audit.md`, `benchmark_results.json`, `stress_test_results.json` are local-only
+- [x] **Memory graph not committed** - `graph.json` lives outside the repo; `.gitignore` covers it as a second layer
+- [ ] **Commit author email** - History carries a personal email; set `user.email` to your GitHub noreply address for future commits
 
 ## 🧪 Test Status
 

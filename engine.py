@@ -18,10 +18,10 @@ import re
 import os
 from cache import cache
 
-# Paths
-BASE = Path("REDACTED_LOCAL_PATH")
-BRIDGE = BASE / "memory" / "graphify-out" / "bridge"
-MEMORY_GRAPH = BASE / "memory" / "graphify-out" / "graph.json"
+# Paths — bridge dir is wherever this file lives; memory graph is one level up
+# (override with HLCO_MEMORY_GRAPH env var if your layout differs)
+BRIDGE = Path(__file__).resolve().parent
+MEMORY_GRAPH = Path(os.environ.get("HLCO_MEMORY_GRAPH", BRIDGE.parent / "graph.json"))
 AUDIT_LOG = BRIDGE / "lucky-audit.md"
 CONFIG_FILE = BRIDGE / "lucky-config.yaml"
 
