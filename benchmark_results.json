@@ -1,0 +1,67 @@
+{
+  "benchmark_results": {
+    "graph_stats": {
+      "memory_graph_nodes": 34,
+      "main_graph_nodes": 8276,
+      "main_graph_edges": 12437
+    },
+    "hlco_results": [
+      {
+        "success": true,
+        "query": "finances",
+        "intent": "financial",
+        "tokens_used": 320,
+        "nodes_returned": 1,
+        "time_ms": 86.52329444885254,
+        "edge_followed": 0
+      },
+      {
+        "success": true,
+        "query": "move plan",
+        "intent": "relocation",
+        "tokens_used": 1300,
+        "nodes_returned": 5,
+        "time_ms": 78.02486419677734,
+        "edge_followed": 10
+      },
+      {
+        "success": true,
+        "query": "ssh",
+        "intent": "ssh",
+        "tokens_used": 320,
+        "nodes_returned": 1,
+        "time_ms": 91.88628196716309,
+        "edge_followed": 0
+      },
+      {
+        "success": true,
+        "query": "hermes agent",
+        "intent": "agent_config",
+        "tokens_used": 0,
+        "nodes_returned": 0,
+        "time_ms": 82.55553245544434,
+        "edge_followed": 0
+      },
+      {
+        "success": true,
+        "query": "memory structure",
+        "intent": "memory_structure",
+        "tokens_used": 1550,
+        "nodes_returned": 4,
+        "time_ms": 88.05537223815918,
+        "edge_followed": 3
+      }
+    ],
+    "totals": {
+      "total_tokens": 3490,
+      "total_time_ms": 427.05,
+      "queries_run": 5
+    },
+    "savings": {
+      "full_graph_tokens_estimated": 827600,
+      "hlco_tokens_used": 3490,
+      "token_savings": 824110,
+      "percentage_reduction": 99.6
+    }
+  }
+}

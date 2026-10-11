@@ -1,0 +1,29 @@
+# Lucky.Engine .gitignore
+# Prevents personal data and private configs from leaking to GitHub
+
+## Memory Data (Do NOT commit these)
+memory/*.md
+memory/*.txt
+memory/graphify-out/graph.json
+memory/graphify-out/GRAPH_REPORT.md
+memory/graphify-out/manifest.json
+memory/corpus/
+
+## Personal Credentials
+*.keys
+*.pem
+secrets.json
+.env
+
+## Generated Files
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.pylintrc
+.idea/
+.vscode/
+
+## Logs
+*.log
+logs/

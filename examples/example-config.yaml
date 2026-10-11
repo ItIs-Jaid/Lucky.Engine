@@ -1,0 +1,26 @@
+# Example Configuration
+# Copy this to lucky-config.yaml and customize for your setup
+
+# Token Limits
+max_tokens: 2000           # Max tokens per query
+confidence_threshold: 0.8   # Min confidence to include node
+audit_max_lines: 5000       # Rotate audit log at this line count
+default_budget: 500         # Default budget for queries
+fallback_budget: 1500       # Budget for complex queries
+
+# Intent Detection Settings
+intent_timeout: 500         # Max ms for intent detection
+max_expansion_queries: 5   # Max related queries to generate
+
+# Edge Traversal
+edge_limit: 3               # Max edges to follow per node
+max_related_nodes: 10       # Max nodes to return
+
+# Caching (optional)
+cache_enabled: true
+cache_dir: .cache
+cache_ttl_seconds: 3600    # 1 hour
+
+# Logging
+log_level: INFO             # DEBUG, INFO, WARNING, ERROR
+audit_format: markdown      # markdown, json, plain

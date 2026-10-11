@@ -1,0 +1,29 @@
+# HLCO Configuration
+
+## Token Limits
+max_tokens: 2000
+
+## Matching
+confidence_threshold: 0.8
+
+## Audit
+audit_max_lines: 5000
+
+## Skill Priorities (higher = prefer loading first)
+skill_weights:
+  memory-graph: 1.0
+  hermes-agent: 0.8
+  graphify: 0.9
+  finances: 1.0
+  agent-skills: 0.9
+  security: 0.7
+  research: 0.7
+  productivity: 0.6
+
+## Query Defaults
+default_budget: 500
+fallback_budget: 1500
+
+## LLM Intent Classifier (optional)
+# Set HLCO_LLM_API_KEY environment variable to enable LLM classification
+# Set HLCO_LLM_API_URL for custom endpoint (default: http://localhost:8080/v1/chat/completions)

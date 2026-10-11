@@ -1,0 +1,37 @@
+[
+  {
+    "id": "SKILL_memory_0",
+    "label": "memory → Memory Structure",
+    "type": "skill_reference",
+    "skill": "memory",
+    "memory_ref": "Memory SSOT"
+  },
+  {
+    "id": "SKILL_finance_0",
+    "label": "finances → Budget",
+    "type": "skill_reference",
+    "skill": "finances",
+    "memory_ref": "User Budget"
+  },
+  {
+    "id": "SKILL_goals_0",
+    "label": "goals → Short-term Objectives",
+    "type": "skill_reference",
+    "skill": "goals",
+    "memory_ref": "Goals"
+  },
+  {
+    "id": "SKILL_coding_0",
+    "label": "coding → Development",
+    "type": "skill_reference",
+    "skill": "coding",
+    "memory_ref": "Software Stack"
+  },
+  {
+    "id": "SKILL_travel_0",
+    "label": "travel → Locations",
+    "type": "skill_reference",
+    "skill": "travel",
+    "memory_ref": "Environment"
+  }
+]

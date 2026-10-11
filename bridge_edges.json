@@ -1,0 +1,132 @@
+[
+  {
+    "source": "SKILL-memory_graph_0",
+    "target": "SKILL-memory_graph_1",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-memory_graph_0",
+    "target": "SKILL-memory_graph_2",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-memory_graph_1",
+    "target": "SKILL-memory_graph_0",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-memory_graph_1",
+    "target": "SKILL-memory_graph_2",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-memory_graph_2",
+    "target": "SKILL-memory_graph_0",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-memory_graph_2",
+    "target": "SKILL-memory_graph_1",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-hermes_agent_0",
+    "target": "SKILL-hermes_agent_1",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-hermes_agent_0",
+    "target": "SKILL-hermes_agent_2",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-hermes_agent_1",
+    "target": "SKILL-hermes_agent_0",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-hermes_agent_1",
+    "target": "SKILL-hermes_agent_2",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-hermes_agent_2",
+    "target": "SKILL-hermes_agent_0",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-hermes_agent_2",
+    "target": "SKILL-hermes_agent_1",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-graphify_0",
+    "target": "SKILL-graphify_1",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-graphify_0",
+    "target": "SKILL-graphify_2",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-graphify_1",
+    "target": "SKILL-graphify_0",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-graphify_1",
+    "target": "SKILL-graphify_2",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-graphify_2",
+    "target": "SKILL-graphify_0",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-graphify_2",
+    "target": "SKILL-graphify_1",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-agent_skills_0",
+    "target": "SKILL-agent_skills_1",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-agent_skills_1",
+    "target": "SKILL-agent_skills_0",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-finances_0",
+    "target": "SKILL-finances_1",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-finances_0",
+    "target": "SKILL-finances_2",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-finances_1",
+    "target": "SKILL-finances_0",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-finances_1",
+    "target": "SKILL-finances_2",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-finances_2",
+    "target": "SKILL-finances_0",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-finances_2",
+    "target": "SKILL-finances_1",
+    "type": "skill_related"
+  }
+]

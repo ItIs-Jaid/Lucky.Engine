@@ -1,0 +1,240 @@
+[
+  {
+    "id": "SKILL-memory_graph_0",
+    "label": "memory-graph → Memory Layer SSOT",
+    "type": "skill_reference",
+    "skill": "memory-graph",
+    "memory_ref": "Memory Layer SSOT"
+  },
+  {
+    "id": "SKILL-memory_graph_1",
+    "label": "memory-graph → User Mirror (USER.md)",
+    "type": "skill_reference",
+    "skill": "memory-graph",
+    "memory_ref": "User Mirror (USER.md)"
+  },
+  {
+    "id": "SKILL-memory_graph_2",
+    "label": "memory-graph → Memory Convention",
+    "type": "skill_reference",
+    "skill": "memory-graph",
+    "memory_ref": "Memory Convention"
+  },
+  {
+    "id": "SKILL-hermes_agent_0",
+    "label": "hermes-agent → Profile & Infrastructure",
+    "type": "skill_reference",
+    "skill": "hermes-agent",
+    "memory_ref": "Profile & Infrastructure"
+  },
+  {
+    "id": "SKILL-hermes_agent_1",
+    "label": "hermes-agent → SSH Lane",
+    "type": "skill_reference",
+    "skill": "hermes-agent",
+    "memory_ref": "SSH Lane"
+  },
+  {
+    "id": "SKILL-hermes_agent_2",
+    "label": "hermes-agent → Tailnet",
+    "type": "skill_reference",
+    "skill": "hermes-agent",
+    "memory_ref": "Tailnet"
+  },
+  {
+    "id": "SKILL-graphify_0",
+    "label": "graphify → Memory Graph",
+    "type": "skill_reference",
+    "skill": "graphify",
+    "memory_ref": "Memory Graph"
+  },
+  {
+    "id": "SKILL-graphify_1",
+    "label": "graphify → Corpus Graph",
+    "type": "skill_reference",
+    "skill": "graphify",
+    "memory_ref": "Corpus Graph"
+  },
+  {
+    "id": "SKILL-graphify_2",
+    "label": "graphify → Table of Contents",
+    "type": "skill_reference",
+    "skill": "graphify",
+    "memory_ref": "Table of Contents"
+  },
+  {
+    "id": "SKILL-agent_skills_0",
+    "label": "agent-skills → Goals",
+    "type": "skill_reference",
+    "skill": "agent-skills",
+    "memory_ref": "Goals"
+  },
+  {
+    "id": "SKILL-agent_skills_1",
+    "label": "agent-skills → Aspirations",
+    "type": "skill_reference",
+    "skill": "agent-skills",
+    "memory_ref": "Aspirations"
+  },
+  {
+    "id": "SKILL-finances_0",
+    "label": "finances → Move Fund",
+    "type": "skill_reference",
+    "skill": "finances",
+    "memory_ref": "Move Fund"
+  },
+  {
+    "id": "SKILL-finances_1",
+    "label": "finances → Income Bridge",
+    "type": "skill_reference",
+    "skill": "finances",
+    "memory_ref": "Income Bridge"
+  },
+  {
+    "id": "SKILL-finances_2",
+    "label": "finances → Liabilities",
+    "type": "skill_reference",
+    "skill": "finances",
+    "memory_ref": "Liabilities"
+  },
+  {
+    "id": "SKILL-productivity_0",
+    "label": "productivity → Move Plan",
+    "type": "skill_reference",
+    "skill": "productivity",
+    "memory_ref": "Move Plan (SSOT)"
+  },
+  {
+    "id": "SKILL-productivity_1",
+    "label": "productivity → Move Fund",
+    "type": "skill_reference",
+    "skill": "productivity",
+    "memory_ref": "Move Fund"
+  },
+  {
+    "id": "SKILL-productivity_2",
+    "label": "productivity → Goals",
+    "type": "skill_reference",
+    "skill": "productivity",
+    "memory_ref": "Goals"
+  },
+  {
+    "id": "SKILL-productivity_3",
+    "label": "productivity → Income Bridge",
+    "type": "skill_reference",
+    "skill": "productivity",
+    "memory_ref": "Income Bridge"
+  },
+  {
+    "id": "SKILL-devops_0",
+    "label": "devops → Profile & Infrastructure",
+    "type": "skill_reference",
+    "skill": "devops",
+    "memory_ref": "Profile & Infrastructure"
+  },
+  {
+    "id": "SKILL-devops_1",
+    "label": "devops → Environment",
+    "type": "skill_reference",
+    "skill": "devops",
+    "memory_ref": "Environment"
+  },
+  {
+    "id": "SKILL-research_0",
+    "label": "research → Goals",
+    "type": "skill_reference",
+    "skill": "research",
+    "memory_ref": "Goals"
+  },
+  {
+    "id": "SKILL-research_1",
+    "label": "research → Aspirations",
+    "type": "skill_reference",
+    "skill": "research",
+    "memory_ref": "Aspirations"
+  },
+  {
+    "id": "SKILL-security_0",
+    "label": "security → User Traits",
+    "type": "skill_reference",
+    "skill": "security",
+    "memory_ref": "Traits"
+  },
+  {
+    "id": "SKILL-security_1",
+    "label": "security → Environment",
+    "type": "skill_reference",
+    "skill": "security",
+    "memory_ref": "Environment"
+  },
+  {
+    "id": "SKILL-software_development_0",
+    "label": "software-development → Aspirations",
+    "type": "skill_reference",
+    "skill": "software-development",
+    "memory_ref": "Aspirations"
+  },
+  {
+    "id": "SKILL-software_development_1",
+    "label": "software-development → Goals",
+    "type": "skill_reference",
+    "skill": "software-development",
+    "memory_ref": "Goals"
+  },
+  {
+    "id": "SKILL-creative_0",
+    "label": "creative → Aspirations",
+    "type": "skill_reference",
+    "skill": "creative",
+    "memory_ref": "Aspirations"
+  },
+  {
+    "id": "SKILL-mlops_0",
+    "label": "mlops → Environment",
+    "type": "skill_reference",
+    "skill": "mlops",
+    "memory_ref": "Environment"
+  },
+  {
+    "id": "SKILL-github_0",
+    "label": "github → Profile & Infrastructure",
+    "type": "skill_reference",
+    "skill": "github",
+    "memory_ref": "Profile & Infrastructure"
+  },
+  {
+    "id": "SKILL-learning_0",
+    "label": "learning → User Traits",
+    "type": "skill_reference",
+    "skill": "learning",
+    "memory_ref": "Traits"
+  },
+  {
+    "id": "SKILL-note_taking_0",
+    "label": "note-taking → Memory Convention",
+    "type": "skill_reference",
+    "skill": "note-taking",
+    "memory_ref": "Memory Convention"
+  },
+  {
+    "id": "SKILL-autonomous_ai_agents_0",
+    "label": "autonomous-ai-agents → Profile & Infrastructure",
+    "type": "skill_reference",
+    "skill": "autonomous-ai-agents",
+    "memory_ref": "Profile & Infrastructure"
+  },
+  {
+    "id": "SKILL-mcp_0",
+    "label": "mcp → Environment",
+    "type": "skill_reference",
+    "skill": "mcp",
+    "memory_ref": "Environment"
+  },
+  {
+    "id": "SKILL-project_0",
+    "label": "project → Goals",
+    "type": "skill_reference",
+    "skill": "project",
+    "memory_ref": "Goals"
+  }
+]
