@@ -44,14 +44,15 @@ python test_suite.py
 
 ## Purpose
 
-Links your **memory layer** (36 nodes, 4 communities) with your **skills** (57+ directories) through pre-computed cross-reference nodes and intelligent intent-based matching.
+Links your **memory layer** to your **skills** through pre-computed cross-reference nodes and intelligent intent-based matching.
 
 ## Structure
 
 ```
 memory/graphify-out/
-├── graph.json          # Original memory graph (34 nodes)
+├── graph.json          # Original memory graph
 ├── GRAPH_REPORT.md
+└── benchmark/ # Stress tests and results
 └── bridge/
     ├── bridge_nodes.json   # 14 skill-to-memory mapping nodes
     └── bridge_edges.json   # 26 intra-skill edges
@@ -92,6 +93,8 @@ graphify query "finances AND move" --budget 800
 > "using the example of moving because all of my agentic projects are intended to be tasks you want to delegate in your life so you can focus on what makes life fun as opposed to taking fun tasks and trying to make them perfect. i want the annoying tasks out of the way"
 
 ## Performance Benchmarks
+
+> 💡 **Note:** See **[BENCHMARKS.md](BENCHMARKS.md)** for detailed stress testing and scalability results.
 
 ### Latency by Graph Size
 ```mermaid
