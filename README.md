@@ -4,7 +4,7 @@
 
 
 > **A Note from the Creator:**
-> "im trying to vibe my way to more effective local agents. truely dont understand what exactly im building but want to share incase im building something of value that could help someone else. always eager to learn and welcome any feedback :3"
+> "I'm trying to vibe my way to more effective local agents. I truly don't understand what exactly I'm building but want to share in case I'm building something of value that could help someone else. Always eager to learn and welcome any feedback :3"
 
 **Location:** `<your-project>/memory/graphify-out/bridge/`
 
