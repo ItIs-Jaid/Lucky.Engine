@@ -58,6 +58,11 @@ graphify query "Move Fund" --budget 300
 graphify query "finances AND move" --budget 800
 ```
 
+> **Note from Creator:**
+> "using the example of moving because all of my agentic projects are intended to be tasks you want to delegate in your life so you can focus on what makes life fun as opposed to taking fun tasks and trying to make them perfect i want the annoying tasks out of the way"
+
+
+
 ## Benefits
 
 | Before | After |
