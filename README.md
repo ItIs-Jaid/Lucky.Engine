@@ -2,7 +2,8 @@
 
 **Your Agent might be smart. Now make it Lucky ;)**
 
-**Location:** `<your-project>/memory/graphify-out/bridge/`
+**Location:** `<your-project>/memory/graphify-out/bridge/`  
+**Security:** Local-first (no external skill fetches)
 
 > **A Note from the Creator:**
 > "I'm trying to vibe my way to more effective local agents. I truly don't understand what exactly I'm building but want to share in case I'm building something of value that could help someone else. Always eager to learn and welcome any feedback :3"
@@ -83,16 +84,23 @@ See `examples/QUICKSTART.md` for setup details.
 2. **For skills:** Check `bridge/bridge_nodes.json`
 3. **Combined:** Run separate queries and merge
 
-## Future Work
+## Security
 
-| Feature | Status | Notes |
-|---------|--------|-------|
-| Unified Query Graph | Planned | Merge memory + skills graphs |
-| Persistent Caching | In Progress | Disk cache for repeat queries |
-| Edge Traversal | Active | See `edge-traversal.md` |
-| Intent Classification | Planned | TF-IDF detection (see `hlco`) |
+Local-first architecture. All skill and memory data is loaded from local files only.
 
-> Want to contribute? Open an issue or PR.
+| Component | Source | External access? |
+|-----------|--------|-----------------|
+| Skill definitions | `bridge_nodes.json` | ❌ No |
+| Memory graph | `graph.json` | ❌ No |
+| Intent classification | Optional local LLM | ❌ No (localhost only) |
+
+### Threat Model
+
+- **Supply-chain attacks:** Impossible (no remote dependencies)
+- **Skill tampering:** Requires local file access
+- **Data exfiltration:** No external API calls by default
+
+See **[SECURITY.md](SECURITY.md)** for full details.
 
 ## Extending
 

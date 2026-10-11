@@ -1,7 +1,14 @@
 #!/usr/bin/env python3
 """
 Lucky.Engine Core
-Resolves queries to relevant memory/skills nodes with budget constraints.
+
+SECURITY: Local-first architecture. All skill and memory data is loaded
+from local files only. No external fetches, registries, or remote calls.
+
+Threat model:
+- No supply-chain attacks (no remote dependencies)
+- No skill tampering without local file access
+- No data exfiltration (no external API calls)
 """
 
 import json
