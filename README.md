@@ -2,36 +2,25 @@
 
 **Your Agent might be smart. Now make it Lucky ;)**
 
+**Location:** `<your-project>/memory/graphify-out/bridge/`
 
 > **A Note from the Creator:**
 > "I'm trying to vibe my way to more effective local agents. I truly don't understand what exactly I'm building but want to share in case I'm building something of value that could help someone else. Always eager to learn and welcome any feedback :3"
 
-## Table of Contents
-
-- [What It Does](#what-it-does)
-- [Quick Start & Installation](#quick-start--installation)
-- [Query Patterns](#query-patterns)
-- [Performance Benchmarks](#performance-benchmarks)
-- [Examples & Templates](#examples--templates)
-- [Extending](#extending)
-
-**Location:** `<your-project>/memory/graphify-out/bridge/`
-
 ## What It Does
 
-Lucky.Engine intelligently loads only the relevant memory and skills context for each query, reducing token usage from ~3-8k to ~300-500 per query.
+This tool loads just the memory and skills you actually need for each query. Instead of dumping 3-8k tokens into context, it pulls down 300-500 tokens that are actually relevant to your question.
 
-## Quick Start & Installation
+## Quick Start
 
-### Installation Script (Linux/Mac)
+### Linux/Mac
 ```bash
 ./install.sh
 ```
 
-### Manual Setup (Windows)
-1. Clone the repository
-2. Copy example files:
+### Windows
 ```powershell
+# Clone repo, then copy examples
 Copy-Item examples\example-config.yaml .\lucky-config.yaml
 Copy-Item examples\example-USER.md .\USER.md
 Copy-Item examples\example-MEMORY-SSOT.md .\MEMORY-SSOT.md
@@ -44,95 +33,70 @@ python test_suite.py
 
 ## Purpose
 
-Links your **memory layer** to your **skills** through pre-computed cross-reference nodes and intelligent intent-based matching.
+Connects your memory layer to your skills through bridge nodes. When you query "finances", it knows to pull from the Move Fund node and related nodes.
 
-## Structure
+## How It Works
 
+### Structure
 ```
 memory/graphify-out/
 ├── graph.json          # Original memory graph
 ├── GRAPH_REPORT.md
-└── benchmark/ # Stress tests and results
+└── benchmark/ # Stress tests
 └── bridge/
-    ├── bridge_nodes.json   # 14 skill-to-memory mapping nodes
+    ├── bridge_nodes.json   # 14 skill-to-memory mappings
     └── bridge_edges.json   # 26 intra-skill edges
 ```
 
-## Quick Reference
+### Query Patterns
 
-| Skill | Memory Link | Usage |
-|-------|-------------|-------|
-| `memory-graph` | Memory Layer SSOT | Core memory structure |
-| `hermes-agent` | Profile & Infrastructure | Agent config, SSH, Tailscale |
-| `graphify` | Memory Graph + Corpus Graph | Query both layers |
-| `agent-skills` | Goals + Aspirations | Task coordination |
-| `finances` | Move Fund + Income Bridge | Financial planning |
-
-## Query Patterns
-
-### Pattern 1: Direct Memory Query
+**Direct memory query:**
 ```bash
 graphify query "What is my move plan?" --budget 500
 ```
 
-### Pattern 2: Skill-to-Memory Bridge
+**Through skill bridge:**
 ```bash
-# First check bridge nodes
-cat memory/graphify-out/bridge/bridge_nodes.json | grep "finances"
-# Then query the linked memory node
+# Check what's mapped
+cat bridge/bridge_nodes.json | grep "finances"
+# Query linked node
 graphify query "Move Fund" --budget 300
 ```
 
->> **Note from Creator:**
+> **Note from Creator:**
 > "using the example of moving because all of my agentic projects are intended to be tasks you want to delegate in your life so you can focus on what makes life fun as opposed to taking fun tasks and trying to make them perfect. i want the annoying tasks out of the way"
 
-## Benefits
+## Examples
 
-| Before | After |
-|--------|-------|
-| Full context token (~4-8k) | Targeted query (~300-800) |
-| Manual memory lookup | Direct skill-to-memory bridge |
-| Disconnected graphs | Unified query surface |
-
-## 📚 Examples & Templates
-
-To get started, copy the example files from the `examples/` folder:
-
+Copy the template files and fill them with your actual data:
 ```bash
-# Copy configuration
 cp examples/example-config.yaml lucky-config.yaml
-
-# Copy memory templates (then edit with your actual data)
 cp examples/example-USER.md USER.md
 cp examples/example-MEMORY-SSOT.md MEMORY-SSOT.md
-cp examples/example-bridge_nodes.json bridge_nodes.json
 ```
 
-See `examples/QUICKSTART.md` for a complete setup guide.
+See `examples/QUICKSTART.md` for setup details.
 
 ## How to Use
 
-1. **For memory queries:** Use `/memory/query` (future) or `graphify query "X" --budget 500`
-2. **For skill lookups:** Check `bridge/bridge_nodes.json` for memory links
-3. **For combined queries:** Run separate queries and merge results
+1. **For memory:** `graphify query "X" --budget 500`
+2. **For skills:** Check `bridge/bridge_nodes.json`
+3. **Combined:** Run separate queries and merge
 
+## Future Work
 
-## Future Features
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Unified Query Graph | Planned | Merge memory + skills graphs |
+| Persistent Caching | In Progress | Disk cache for repeat queries |
+| Edge Traversal | Active | See `edge-traversal.md` |
+| Intent Classification | Planned | TF-IDF detection (see `hlco`) |
 
-The following features are planned or in development:
-
-| Feature | Status | Description |
-|---------|--------|-------------|
-| **Unified Query Graph** | Planned | Merge memory and skills graphs into a single queryable layer |
-| **Persistent Caching** | In Progress | Disk-based cache for repeated queries |
-| **Edge Traversal** | Active | Relationship-based retrieval (see `edge-traversal.md`) |
-| **Intent Classification** | Planned | TF-IDF based intent detection (see `hlco` project) |
-
-> Want to contribute? Open an issue or PR on GitHub!
+> Want to contribute? Open an issue or PR.
 
 ## Extending
 
-Add new mappings in `bridge/bridge_nodes.json`:
+Add new mappings to `bridge/bridge_nodes.json`:
 ```json
 {
   "id": "SKILL_my-skill_0",
@@ -142,6 +106,3 @@ Add new mappings in `bridge/bridge_nodes.json`:
   "memory_ref": "Memory Category"
 }
 ```
-
----
-*Generated: 2026-10-11*
