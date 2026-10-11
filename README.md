@@ -83,38 +83,8 @@ cat memory/graphify-out/bridge/bridge_nodes.json | grep "finances"
 graphify query "Move Fund" --budget 300
 ```
 
-### Pattern 3: Unified Query (Future)
-```bash
-# When both graphs are linked:
-graphify query "finances AND move" --budget 800
-```
-
-> **Note from Creator:**
+>> **Note from Creator:**
 > "using the example of moving because all of my agentic projects are intended to be tasks you want to delegate in your life so you can focus on what makes life fun as opposed to taking fun tasks and trying to make them perfect. i want the annoying tasks out of the way"
-
-## Performance Benchmarks
-
-> 💡 **Note:** See **[BENCHMARKS.md](BENCHMARKS.md)** for detailed stress testing and scalability results.
-
-### Latency by Graph Size
-```mermaid
-xychart-beta
-    title "Query Latency (ms) vs Graph Size"
-    x-axis [34, 100, 500, 1000, 2000, 5000]
-    y-axis "Milliseconds (ms)" 0 --> 600
-    line [54, 60, 100, 150, 250, 550]
-```
-
-### Token Usage by Query Type
-```mermaid
-barChart
-    title "Token Usage per Query"
-    x-axis [finances, move plan, ssh, memory structure]
-    y-axis "Tokens" 0 --> 1600
-    bar [320, 1300, 320, 1550]
-```
-
-See **[BENCHMARKS.md](BENCHMARKS.md)** for detailed stress tests and scaling guidelines.
 
 ## Benefits
 
@@ -145,6 +115,20 @@ See `examples/QUICKSTART.md` for a complete setup guide.
 1. **For memory queries:** Use `/memory/query` (future) or `graphify query "X" --budget 500`
 2. **For skill lookups:** Check `bridge/bridge_nodes.json` for memory links
 3. **For combined queries:** Run separate queries and merge results
+
+
+## Future Features
+
+The following features are planned or in development:
+
+| Feature | Status | Description |
+|---------|--------|-------------|
+| **Unified Query Graph** | Planned | Merge memory and skills graphs into a single queryable layer |
+| **Persistent Caching** | In Progress | Disk-based cache for repeated queries |
+| **Edge Traversal** | Active | Relationship-based retrieval (see `edge-traversal.md`) |
+| **Intent Classification** | Planned | TF-IDF based intent detection (see `hlco` project) |
+
+> Want to contribute? Open an issue or PR on GitHub!
 
 ## Extending
 
