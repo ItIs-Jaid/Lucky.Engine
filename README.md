@@ -103,15 +103,21 @@ Local-first architecture. All skill and memory data is loaded from local files o
 |-----------|--------|-----------------|
 | Skill definitions | `bridge_nodes.json` | ❌ No |
 | Memory graph | `graph.json` | ❌ No |
-| Intent classification | Optional local LLM | ❌ No (localhost only) |
+| Intent classification | Optional local LLM | Configurable endpoint (default localhost) |
 
 ### Threat Model
 
-- **Supply-chain attacks:** Impossible (no remote dependencies)
+- **Supply-chain attacks:** reduced risk (no runtime remote fetches for skills/memory)
 - **Skill tampering:** Requires local file access
-- **Data exfiltration:** No external API calls by default
+- **Data exfiltration:** No external API calls unless LLM classifier endpoint is configured
 
 See **[SECURITY.md](SECURITY.md)** for full details.
+
+## Dependencies
+
+- Runtime: Python stdlib only.
+- Optional: external `graphify` tool to build `graph.json` (not bundled).
+- Optional LLM intent classifier uses a configurable OpenAI-compatible URL.
 
 ## Extending
 

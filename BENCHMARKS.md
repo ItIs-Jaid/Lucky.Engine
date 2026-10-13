@@ -1,49 +1,42 @@
 # 📊 Performance Benchmarks
 
-All tests run in an isolated Docker environment to ensure consistent metrics.
+Measured, reproducible, synthetic. Re-run any time:
 
-## Stress Test Results
-
-| Graph Size | Query | Tokens Used | Latency | Threshold Hit? |
-|------------|-------|-------------|---------|----------------|
-| 34 nodes (Baseline) | finances | ~320 | ~54ms | No |
-| 100 nodes | finances | ~370 | ~60ms | No |
-| 500 nodes | move plan | ~570 | ~100ms | No |
-| 1000 nodes | move plan | ~820 | ~150ms | No |
-| 2000 nodes | move plan | ~1,320 | ~250ms | No |
-| 5000 nodes | move plan | ~2,820 | ~550ms | ⚠️ |
-
-### Key Findings
-
-- **Sweet Spot:** 34 - 1000 nodes (sub-150ms, <1k tokens)
-- **Threshold:** Performance degrades noticeably above 5000 nodes
-- **Token Savings:** 99.6% reduction vs. full graph queries
-
-### Recommended Configurations
-
-| Use Case | Max Nodes | Config |
-|----------|-----------|--------|
-| Personal Assistant | <500 | `confidence_threshold: 0.9` |
-| Team Knowledge Base | <2000 | `confidence_threshold: 0.8` |
-| Enterprise Scale | <10000 | `confidence_threshold: 0.7` |
-
-## How We Tested
-
-**Environment:**
 ```bash
-docker build -t hlco-benchmark .
-docker run hlco-benchmark python benchmarks/stress_test.py
+python eval/runner.py --budget 200
 ```
 
-**Methodology:**
-1. Generated synthetic graph data (memory + skills)
-2. Ran 500+ queries across 6 graph sizes
-3. Measured token usage and latency
-4. Recorded threshold breaches
+## Dataset
+
+- Synthetic graph: `tests/fixtures/graph_minimal.json` (7 memory nodes + 2 hyperedges)
+- Queries: `eval/queries.json` (25 synthetic queries with expected nodes)
+- Budget: 200 tokens per query
+- Method comparison: Lucky.Engine vs. plain keyword search vs. dump-everything
+
+## Results (25 queries, budget 200)
+
+| Method | Hit rate | Avg tokens / query | Total tokens |
+|--------|----------|-------------------|--------------|
+| Lucky.Engine | 1.00 | 18.3 | 457 |
+| Plain keyword search | 1.00 | 16.3 | 407 |
+| Dump everything | 1.00 | 86.0 | 2150 |
+
+Numbers from the runner; use `eval/runner.py --json` for exact.
+
+## Notes
+
+- Lucky.Engine and plain keyword both hit every expected node on this small graph.
+- Lucky.Engine uses about 79% fewer tokens than dumping everything on average.
+- At this size the win is modest; it grows with graph size and query selectivity (open item).
 
 ## Scaling Tips
 
-If you exceed 2000 nodes:
-1. Increase `confidence_threshold` in `lucky-config.yaml`
+1. Increase `confidence_threshold` in `lucky-config.yaml` for large graphs
 2. Enable caching (`cache_enabled: true`)
-3. Consider horizontal scaling with multiple HLCO instances
+
+## External Dependency Note
+
+A real deployment depends on the external `graphify` tool to build `graph.json`.
+Lucky.Engine does not fetch it at runtime. The LLM intent classifier endpoint is
+configurable (`LUCKY_LLM_API_URL`, deprecated `HLCO_LLM_API_URL`), so no "no
+external access" claim should be made for setups that enable it.
