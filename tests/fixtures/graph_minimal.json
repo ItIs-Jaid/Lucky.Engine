@@ -1,0 +1,83 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {
+    "hyperedges": [
+      {
+        "id": "move_cluster",
+        "label": "Move plan cluster",
+        "nodes": ["move_plan", "move_fund", "income_bridge"],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0
+      },
+      {
+        "id": "hermes_cluster",
+        "label": "Hermes infra cluster",
+        "nodes": ["hermes_agent", "tailnet"],
+        "relation": "related",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0
+      }
+    ],
+    "schema_version": 1
+  },
+  "nodes": [
+    {
+      "id": "move_plan",
+      "label": "Move Plan",
+      "type": "memory_node",
+      "rationale": "Olympia primary target, February 2027, Walmart transfer",
+      "source_file": "MEMORY-SSOT.md",
+      "norm_label": "move plan"
+    },
+    {
+      "id": "move_fund",
+      "label": "Move Fund",
+      "type": "memory_node",
+      "rationale": "7k liquid: 3k cash plus 4k 401k loan",
+      "source_file": "USER.md",
+      "norm_label": "move fund"
+    },
+    {
+      "id": "income_bridge",
+      "label": "Income Bridge",
+      "type": "memory_node",
+      "rationale": "Photography and drone side income bridge",
+      "source_file": "USER.md",
+      "norm_label": "income bridge"
+    },
+    {
+      "id": "hermes_agent",
+      "label": "Hermes Agent",
+      "type": "memory_node",
+      "rationale": "Agent home and tooling config",
+      "source_file": "USER.md",
+      "norm_label": "hermes agent"
+    },
+    {
+      "id": "tailnet",
+      "label": "Tailnet",
+      "type": "memory_node",
+      "rationale": "Tailscale nodes and routing",
+      "source_file": "USER.md",
+      "norm_label": "tailnet"
+    },
+    {
+      "id": "user_mirror",
+      "label": "User Mirror",
+      "type": "memory_node",
+      "rationale": "Profile and preferences mirror",
+      "source_file": "USER.md",
+      "norm_label": "user mirror"
+    },
+    {
+      "id": "no_rationale",
+      "label": "No Rationale Node",
+      "type": "memory_node",
+      "source_file": "USER.md",
+      "norm_label": "no rationale node"
+    }
+  ],
+  "links": []
+}
