@@ -12,53 +12,206 @@ Threat model:
 """
 
 import json
+import os
+import urllib
+import urllib.error
+import urllib.request
 from pathlib import Path
 from datetime import datetime
 import re
-import os
 from cache import cache
 
+STOPWORDS = {
+    "a", "an", "the", "is", "are", "was", "were", "be", "been", "being",
+    "what", "is", "my", "your", "our", "to", "of", "in", "on", "for", "and",
+    "or", "how", "do", "i", "me", "we", "it", "this", "that", "these",
+    "those", "with", "as", "at", "by", "from", "into",
+}
+
+
+def _short_content(node: dict):
+    if not isinstance(node, dict):
+        return None
+    r = node.get("rationale")
+    if not r:
+        return None
+    r = str(r).strip()
+    if not r:
+        return None
+    return r[:120]
+
+
+def _resolve_memory_ref(ref, graph):
+    if not ref:
+        return None
+    needle = str(ref).strip().lower()
+    for node in graph.get("nodes", []):
+        label = (node.get("label") or "").lower()
+        norm = (node.get("norm_label") or "").lower()
+        if not label:
+            continue
+        if needle == label or needle == norm:
+            return node
+        if label in needle or needle in label:
+            return node
+    return None
+
+
+def _tokenize(text: str) -> set:
+    if not text:
+        return set()
+    toks = set(re.findall(r"[a-z0-9]+", str(text).lower()))
+    return {t for t in toks if t not in STOPWORDS}
+
+
+def _env(primary, *fallbacks):
+    """Read env var with deprecated-name fallbacks. Returns None if unset/empty."""
+    for name in (primary,) + tuple(fallbacks):
+        val = os.environ.get(name)
+        if val:
+            return val
+    return None
+
+
 # Paths — bridge dir is wherever this file lives; memory graph is one level up
-# (override with HLCO_MEMORY_GRAPH env var if your layout differs)
+# (override with LUCKY_MEMORY_GRAPH / deprecated HLCO_MEMORY_GRAPH env var)
 BRIDGE = Path(__file__).resolve().parent
-MEMORY_GRAPH = Path(os.environ.get("HLCO_MEMORY_GRAPH", BRIDGE.parent / "graph.json"))
+MEMORY_GRAPH = Path(
+    _env("LUCKY_MEMORY_GRAPH", "HLCO_MEMORY_GRAPH") or str(BRIDGE.parent / "graph.json")
+)
 AUDIT_LOG = BRIDGE / "lucky-audit.md"
-CONFIG_FILE = BRIDGE / "lucky-config.yaml"
+_config_env = _env("LUCKY_CONFIG_FILE", "HLCO_CONFIG_FILE")
+CONFIG_FILE = Path(_config_env) if _config_env else BRIDGE / "lucky-config.yaml"
+
+
+def _parse_scalar(value: str):
+    value = value.strip()
+    lowered = value.lower()
+    if lowered in ("true", "false"):
+        return lowered == "true"
+    if value == "":
+        return None
+    try:
+        return int(value)
+    except ValueError:
+        pass
+    try:
+        return float(value)
+    except ValueError:
+        pass
+    if len(value) >= 2 and ((value[0] == value[-1] == '"') or (value[0] == value[-1] == "'")):
+        return value[1:-1]
+    return value
+
+
+_DEFAULT_CONFIG = {
+    "max_tokens": 2000,
+    "confidence_threshold": 0.8,
+    "audit_max_lines": 5000,
+    "default_budget": 500,
+    "fallback_budget": 1500,
+    "cache_enabled": False,
+    "skill_weights": {},
+    "intent_keywords": {
+        "finances": "financial",
+        "finance": "financial",
+        "move": "relocation",
+        "relocation": "relocation",
+        "hermes": "agent_config",
+        "memory": "memory_structure",
+        "graph": "graph",
+        "config": "configuration",
+        "skill": "skills",
+        "ssh": "ssh",
+        "tailscale": "network",
+        "tailnet": "network",
+        "network": "network",
+        "todo": "tasks",
+    },
+    "intent_priorities": {
+        "financial": ["Move Fund", "Income Bridge", "Finances"],
+        "relocation": ["Move Plan", "Move Target"],
+        "network": ["Tailnet"],
+        "agent_config": ["Hermes Agent", "Profile"],
+        "general": ["User Mirror", "Memory SSOT"],
+    },
+}
 
 
 def load_config():
-    """Load HLCO configuration (simple key-value parser)."""
-    if CONFIG_FILE.exists():
-        config = {}
-        with open(CONFIG_FILE) as f:
-            for line in f:
-                line = line.strip()
-                if line and not line.startswith("#"):
-                    if ":" in line:
-                        key, val = line.split(":", 1)
-                        config[key.strip()] = val.strip()
-        # Convert to proper types
-        result = {
-            "max_tokens": int(config.get("max_tokens", 2000)),
-            "confidence_threshold": float(config.get("confidence_threshold", 0.8)),
-            "audit_max_lines": int(config.get("audit_max_lines", 5000)),
-            "default_budget": int(config.get("default_budget", 500)),
-        }
-        return result
-    
-    return {
-        "max_tokens": 2000,
-        "confidence_threshold": 0.8,
-        "audit_max_lines": 5000,
-        "default_budget": 500,
-    }
+    """Load Lucky.Engine configuration (nested YAML subset, stdlib only)."""
+    path = CONFIG_FILE
+    if not path.exists():
+        return dict(_DEFAULT_CONFIG)
+
+    config: dict = {}
+    current: str | None = None
+
+    with open(path, encoding="utf-8") as f:
+        for raw in f:
+            line = raw.rstrip("\n")
+            stripped = line.strip()
+            if not stripped or stripped.startswith("#"):
+                continue
+            indent = len(line) - len(line.lstrip())
+            if ":" not in stripped:
+                continue
+            key, _, val = stripped.partition(":")
+            key = key.strip()
+            val = val.strip()
+            if indent == 0:
+                current = None
+                if val == "":
+                    config[key] = {}
+                    current = key
+                else:
+                    # inline dict on one line isn't supported; scalar
+                    config[key] = _parse_scalar(val)
+            else:
+                # indented child
+                parent = current
+                if parent is None:
+                    # infer parent: last dict at top level
+                    for k in reversed(list(config)):
+                        if isinstance(config[k], dict):
+                            parent = k
+                            current = k
+                            break
+                if parent is not None and isinstance(config.get(parent), dict):
+                    config[parent][key] = _parse_scalar(val)
+
+    # Merge with defaults
+    result = dict(_DEFAULT_CONFIG)
+    for k, v in config.items():
+        if k in result and isinstance(result[k], dict) and isinstance(v, dict):
+            result[k] = {**result[k], **v}
+        else:
+            result[k] = v
+
+    # Type coercion for known keys
+    result["max_tokens"] = int(result.get("max_tokens", _DEFAULT_CONFIG["max_tokens"]))
+    result["confidence_threshold"] = float(result.get("confidence_threshold", _DEFAULT_CONFIG["confidence_threshold"]))
+    result["audit_max_lines"] = int(result.get("audit_max_lines", _DEFAULT_CONFIG["audit_max_lines"]))
+    result["default_budget"] = int(result.get("default_budget", _DEFAULT_CONFIG["default_budget"]))
+    result["fallback_budget"] = int(result.get("fallback_budget", _DEFAULT_CONFIG["fallback_budget"]))
+    result["cache_enabled"] = bool(result.get("cache_enabled", _DEFAULT_CONFIG["cache_enabled"]))
+    result["skill_weights"] = dict(result.get("skill_weights", {}) or {})
+    result["intent_keywords"] = dict(result.get("intent_keywords", {}) or {})
+    result["intent_priorities"] = dict(result.get("intent_priorities", {}) or {})
+
+    if not result["intent_keywords"]:
+        result["intent_keywords"] = dict(_DEFAULT_CONFIG["intent_keywords"])
+    if not result["intent_priorities"]:
+        result["intent_priorities"] = dict(_DEFAULT_CONFIG["intent_priorities"])
+
+    return result
 
 
 def load_bridge():
     """Load bridge mappings (skill→memory)."""
     bridge_nodes = BRIDGE / "bridge_nodes.json"
     if bridge_nodes.exists():
-        with open(bridge_nodes) as f:
+        with open(bridge_nodes, encoding="utf-8") as f:
             return json.load(f)
     return []
 
@@ -66,7 +219,7 @@ def load_bridge():
 def load_memory_graph():
     """Load the memory graph."""
     if MEMORY_GRAPH.exists():
-        with open(MEMORY_GRAPH) as f:
+        with open(MEMORY_GRAPH, encoding="utf-8") as f:
             return json.load(f)
     return {"nodes": [], "edges": [], "hyperedges": []}
 
@@ -95,47 +248,40 @@ def get_connected_nodes(graph: dict, node_id: str, edge_limit: int = 3) -> list:
 
 
 def extract_intent(query: str) -> str:
-    """Extract primary intent from query using LLM when available, fallback to keyword matching."""
-    
+    """Extract primary intent from query using LLM when available, keyword fallback."""
     # Check for LLM API key
-    api_key = os.environ.get("HLCO_LLM_API_KEY")
-    
+    api_key = _env("LUCKY_LLM_API_KEY", "HLCO_LLM_API_KEY")
+
     if api_key:
         # Use LLM-based classification
         return classify_intent_llm(query)
-    
+
     # Fallback to keyword matching
+    return _keyword_intent(query)
+
+
+def _keyword_intent(query: str) -> str:
+    """Keyword intent classifier (also LLM fallback)."""
     query_lower = query.lower()
-    
-    # Intent mapping
-    intents = [
-        ("finances", "financial"),
-        ("move", "relocation"),
-        ("hermes", "agent_config"),
-        ("memory", "memory_structure"),
-        ("graph", "graph"),
-        ("config", "configuration"),
-        ("skill", "skills"),
-        ("ssh", "ssh"),
-        ("tailscale", "network"),
-        ("todo", "tasks"),
-    ]
-    
-    for keyword, intent in intents:
+    try:
+        keywords = load_config().get("intent_keywords", {})
+    except Exception:
+        keywords = {}
+    if not keywords:
+        keywords = _DEFAULT_CONFIG["intent_keywords"]
+    for keyword, intent in keywords.items():
         if keyword in query_lower:
             return intent
-    
     return "general"
 
 
 def classify_intent_llm(query: str) -> str:
     """Classify intent using LLM API when key is available."""
-    import urllib.request
-    import urllib.error
-    
-    # Try OpenAI-compatible endpoint (default to localhost)
-    api_url = os.environ.get("HLCO_LLM_API_URL", "http://localhost:8080/v1/chat/completions")
-    
+    import json as _json
+
+    # Try OpenAI-compatible endpoint (LUCKY_ with deprecated HLCO_ fallback)
+    api_url = _env("LUCKY_LLM_API_URL", "HLCO_LLM_API_URL") or "http://localhost:8080/v1/chat/completions"
+
     system_prompt = """You are an intent classifier for a personal knowledge management system.
 Classify the user's query into one of these intents:
 - financial: Money, finances, budget, income, expenses, investments
@@ -152,35 +298,40 @@ Classify the user's query into one of these intents:
 Return ONLY the intent name, nothing else."""
 
     user_prompt = f"Query: {query}"
-    
+
     payload = {
         "model": "default",
         "messages": [
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt}
+            {"role": "user", "content": user_prompt},
         ],
         "temperature": 0.1,
-        "max_tokens": 20
+        "max_tokens": 20,
     }
-    
+
+    api_key = _env("LUCKY_LLM_API_KEY", "HLCO_LLM_API_KEY")
+    if not api_key:
+        return _keyword_intent(query)
+
+    headers = {"Content-Type": "application/json"}
+    headers["Authorization"] = f"Bearer {api_key}"
+
     try:
         req = urllib.request.Request(
             api_url,
-            data=json.dumps(payload).encode("utf-8"),
-            headers={
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json"
-            },
-            method="POST"
+            data=_json.dumps(payload).encode("utf-8"),
+            headers=headers,
+            method="POST",
         )
-        
+
         with urllib.request.urlopen(req, timeout=10) as response:
-            result = json.loads(response.read().decode("utf-8"))
+            result = _json.loads(response.read().decode("utf-8"))
             content = result.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
-            return content if content else "general"
-    
-    except (urllib.error.URLError, urllib.error.HTTPError, json.JSONDecodeError, KeyError, TimeoutError):
-        return "general"
+            return content if content else _keyword_intent(query)
+
+    except Exception:
+        # Network, parsing, key, timeout, etc. -> keyword fallback (never "general" blindly)
+        return _keyword_intent(query)
 
 
 def find_relevant_nodes(query: str, intent: str, bridge: list, graph: dict) -> list:
@@ -193,52 +344,74 @@ def find_relevant_nodes(query: str, intent: str, bridge: list, graph: dict) -> l
     matched = []
     
     # 1. Match by skill in query
+    seen_ids = set(m["id"] for m in matched)
     for skill, weight in weights.items():
         if skill in query_lower:
             # Find bridge mappings for this skill
             for node in bridge:
                 if node.get("skill", "") == skill:
                     confidence = 0.9 * weight
-                    if confidence >= threshold:
+                    if confidence < threshold:
+                        continue
+                    node_id = node.get("id")
+                    if node_id not in seen_ids:
                         matched.append({
-                            "id": node.get("id"),
+                            "id": node_id,
                             "label": node.get("label"),
                             "type": "skill_reference",
                             "confidence": confidence,
+                            "content": None,
                         })
-    
-    # 2. Match by memory node content
+                        seen_ids.add(node_id)
+                    # Make the bridge real: pull the linked memory node.
+                    mem = _resolve_memory_ref(node.get("memory_ref"), graph)
+                    if mem is not None and mem.get("id") not in seen_ids:
+                        mem_conf = min(1.0, confidence + 0.05)
+                        if mem_conf >= threshold:
+                            matched.append({
+                                "id": mem.get("id"),
+                                "label": mem.get("label"),
+                                "type": mem.get("type"),
+                                "confidence": mem_conf,
+                                "content": _short_content(mem),
+                            })
+                            seen_ids.add(mem.get("id"))
+
+    # 2. Match by memory node content (token overlap, no hardcoded substring)
+    query_tokens = _tokenize(query)
     for node in graph.get("nodes", []):
-        label = node.get("label", "").lower()
-        if query_lower in label:
-            confidence = 0.95
-            if confidence >= threshold:
-                matched.append({
-                    "id": node.get("id"),
-                    "label": node.get("label"),
-                    "type": node.get("type"),
-                    "confidence": confidence,
-                })
-    
+        label_tokens = _tokenize(node.get("label", ""))
+        if not label_tokens:
+            continue
+        overlap = query_tokens & label_tokens
+        if not overlap:
+            continue
+        # score: proportion of label tokens matched
+        score = len(overlap) / len(label_tokens)
+        confidence = 0.8 + 0.15 * score
+        if confidence >= threshold:
+            matched.append({
+                "id": node.get("id"),
+                "label": node.get("label"),
+                "type": node.get("type"),
+                "confidence": round(confidence, 3),
+                "content": _short_content(node),
+            })
+
     # 3. Fallback: return high-confidence nodes by intent
     if not matched:
-        intent_priorities = {
-            "financial": ["Move Fund", "Income Bridge", "Finances"],
-            "relocation": ["Move Plan", "Move Target"],
-            "agent_config": ["Hermes Agent", "Profile"],
-            "general": ["User Mirror", "Memory SSOT"],
-        }
-        
-        priorities = intent_priorities.get(intent, intent_priorities["general"])
+        priorities = load_config().get("intent_priorities", {}).get(intent) or load_config().get("intent_priorities", {}).get("general", [])
         for node in graph.get("nodes", []):
             for priority in priorities:
                 if priority.lower() in node.get("label", "").lower():
-                    matched.append({
-                        "id": node.get("id"),
-                        "label": node.get("label"),
-                        "type": node.get("type"),
-                        "confidence": 0.85,
-                    })
+                    if 0.85 >= threshold:
+                        matched.append({
+                            "id": node.get("id"),
+                            "label": node.get("label"),
+                            "type": node.get("type"),
+                            "confidence": 0.85,
+                            "content": _short_content(node),
+                        })
                     break
     
     # Sort by confidence, limit by budget
@@ -247,45 +420,58 @@ def find_relevant_nodes(query: str, intent: str, bridge: list, graph: dict) -> l
 
 
 def estimate_tokens(nodes: list) -> int:
-    """Estimate token count for nodes."""
-    # Rough estimate: ~10 tokens per label + 100 per node
-    return sum(100 + 10 * len(n.get("label", "")) for n in nodes)
+    """Estimate token count from returned label + content (chars/4, labelled estimate)."""
+    total = 0
+    for node in nodes or []:
+        text = node.get("label") or ""
+        content = node.get("content")
+        if content:
+            text = f"{text} {content}"
+        # chars/4 estimate plus small per-node overhead (JSON/fields)
+        total += max(1, len(text) // 4 + 2)
+    return total
 
 
 def write_audit(query: str, intent: str, matched: list, excluded: list, tokens_used: int):
-    """Write audit entry to log."""
-    if not AUDIT_LOG.exists():
-        AUDIT_LOG.write_text("# HLCO Audit Log\n\n")
-    
-    # Load existing log
-    log_text = AUDIT_LOG.read_text()
-    lines = log_text.strip().split("\n")
-    
-    # Trim if over limit
+    """Append an audit entry (never rewrite the whole file)."""
     max_lines = load_config().get("audit_max_lines", 5000)
-    if len(lines) >= max_lines:
-        lines = lines[-(max_lines - 10):]
-        log_text = "\n".join(lines) + "\n"
-    
-    # Append new entry
+
+    # Trim if over limit: rewrite with utf-8 (only when needed).
+    if AUDIT_LOG.exists():
+        try:
+            lines = AUDIT_LOG.read_text(encoding="utf-8").splitlines()
+        except Exception:
+            lines = []
+        if len(lines) >= max_lines:
+            trimmed = lines[-(max_lines - 10):]
+            AUDIT_LOG.write_text("\n".join(trimmed) + "\n", encoding="utf-8")
+
+    # Header for a fresh log.
+    if not AUDIT_LOG.exists() or AUDIT_LOG.stat().st_size == 0:
+        with open(AUDIT_LOG, "w", encoding="utf-8") as f:
+            f.write("# HLCO Audit Log\n\n")
+
+    # Excluded-nodes check via set.
+    matched_ids = {m.get("id") for m in (matched or [])}
+    excluded_ids = {n.get("id") for n in (excluded or []) if n.get("id") not in matched_ids}
+
     timestamp = datetime.now().isoformat()
-    entry = f"""
-### Entry {timestamp}
-**Query:** "{query}"
-**Intent:** {intent}
-**Loaded Nodes:**
-"""
-    for node in matched:
-        entry += f"- {node['label']} [confidence: {node['confidence']:.2f}]\n"
-    
-    if excluded:
-        entry += "**Excluded:**\n"
-        for node in excluded[:5]:  # Limit excluded listing
-            entry += f"- {node.get('label', 'unknown')}\n"
-    
-    entry += f"**Total Tokens:** {tokens_used}\n---\n"
-    
-    AUDIT_LOG.write_text(log_text + entry)
+    entry_lines = [
+        f"### Entry {timestamp}",
+        f'**Query:** "{query}"',
+        f"**Intent:** {intent}",
+        "**Loaded Nodes:**",
+    ]
+    for node in matched or []:
+        entry_lines.append(f"- {node['label']} [confidence: {node['confidence']:.2f}]")
+    if excluded_ids:
+        entry_lines.append("**Excluded (count):** " + str(len(excluded_ids)))
+    entry_lines.append(f"**Total Tokens:** {tokens_used}")
+    entry_lines.append("---")
+    entry = "\n".join(entry_lines) + "\n"
+
+    with open(AUDIT_LOG, "a", encoding="utf-8") as f:
+        f.write(entry)
 
 
 def resolve_query(query: str, budget: int = None, edge_limit: int = 3) -> dict:
@@ -330,14 +516,26 @@ def resolve_query(query: str, budget: int = None, edge_limit: int = 3) -> dict:
                 "type": node.get("type"),
                 "confidence": 0.6,  # Lower confidence for edge-followed nodes
                 "source": "edge_expansion",
+                "content": _short_content(node),
             })
-    
-    # Budget enforcement
+
+    # Budget enforcement: greedy by confidence, never exceed budget
+    matched.sort(key=lambda x: x.get("confidence", 0), reverse=True)
+    selected = []
+    used = 0
+    for node in matched:
+        cost = estimate_tokens([node])
+        if not selected or used + cost <= budget:
+            selected.append(node)
+            used += cost
+        else:
+            # Even if over budget, keep at least one node
+            if not selected:
+                selected.append(node)
+                used += cost
+    matched = selected
     estimated = estimate_tokens(matched)
-    if estimated > budget:
-        matched = matched[:max(1, int(budget / 100))]
-        estimated = estimate_tokens(matched)
-    
+
     # Audit
     excluded = [n for n in graph.get("nodes", []) if n.get("id") not in [m["id"] for m in matched]]
     write_audit(query, intent, matched, excluded, estimated)

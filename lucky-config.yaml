@@ -25,5 +25,7 @@ default_budget: 500
 fallback_budget: 1500
 
 ## LLM Intent Classifier (optional)
-# Set HLCO_LLM_API_KEY environment variable to enable LLM classification
-# Set HLCO_LLM_API_URL for custom endpoint (default: http://localhost:8080/v1/chat/completions)
+# Set LUCKY_LLM_API_KEY environment variable to enable LLM classification
+# (deprecated: HLCO_LLM_API_KEY still works)
+# Set LUCKY_LLM_API_URL for custom endpoint (default: http://localhost:8080/v1/chat/completions)
+# (deprecated: HLCO_LLM_API_URL still works)

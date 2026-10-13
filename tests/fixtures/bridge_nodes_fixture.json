@@ -1,0 +1,23 @@
+[
+  {
+    "id": "SKILL-finances_0",
+    "label": "finances -> Move Fund",
+    "type": "skill_reference",
+    "skill": "finances",
+    "memory_ref": "Move Fund"
+  },
+  {
+    "id": "SKILL-productivity_0",
+    "label": "productivity -> Move Plan",
+    "type": "skill_reference",
+    "skill": "productivity",
+    "memory_ref": "Move Plan"
+  },
+  {
+    "id": "SKILL-finances_1",
+    "label": "finances -> Income Bridge",
+    "type": "skill_reference",
+    "skill": "finances",
+    "memory_ref": "Income Bridge"
+  }
+]
