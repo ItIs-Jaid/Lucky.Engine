@@ -29,6 +29,22 @@ STOPWORDS = {
 }
 
 
+def _resolve_memory_ref(ref, graph):
+    if not ref:
+        return None
+    needle = str(ref).strip().lower()
+    for node in graph.get("nodes", []):
+        label = (node.get("label") or "").lower()
+        norm = (node.get("norm_label") or "").lower()
+        if not label:
+            continue
+        if needle == label or needle == norm:
+            return node
+        if label in needle or needle in label:
+            return node
+    return None
+
+
 def _tokenize(text: str) -> set:
     if not text:
         return set()
@@ -311,19 +327,36 @@ def find_relevant_nodes(query: str, intent: str, bridge: list, graph: dict) -> l
     matched = []
     
     # 1. Match by skill in query
+    seen_ids = set(m["id"] for m in matched)
     for skill, weight in weights.items():
         if skill in query_lower:
             # Find bridge mappings for this skill
             for node in bridge:
                 if node.get("skill", "") == skill:
                     confidence = 0.9 * weight
-                    if confidence >= threshold:
+                    if confidence < threshold:
+                        continue
+                    node_id = node.get("id")
+                    if node_id not in seen_ids:
                         matched.append({
-                            "id": node.get("id"),
+                            "id": node_id,
                             "label": node.get("label"),
                             "type": "skill_reference",
                             "confidence": confidence,
                         })
+                        seen_ids.add(node_id)
+                    # Make the bridge real: pull the linked memory node.
+                    mem = _resolve_memory_ref(node.get("memory_ref"), graph)
+                    if mem is not None and mem.get("id") not in seen_ids:
+                        mem_conf = min(1.0, confidence + 0.05)
+                        if mem_conf >= threshold:
+                            matched.append({
+                                "id": mem.get("id"),
+                                "label": mem.get("label"),
+                                "type": mem.get("type"),
+                                "confidence": mem_conf,
+                            })
+                            seen_ids.add(mem.get("id"))
 
     # 2. Match by memory node content (token overlap, no hardcoded substring)
     query_tokens = _tokenize(query)
