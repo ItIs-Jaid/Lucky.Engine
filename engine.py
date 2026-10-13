@@ -29,6 +29,18 @@ STOPWORDS = {
 }
 
 
+def _short_content(node: dict):
+    if not isinstance(node, dict):
+        return None
+    r = node.get("rationale")
+    if not r:
+        return None
+    r = str(r).strip()
+    if not r:
+        return None
+    return r[:120]
+
+
 def _resolve_memory_ref(ref, graph):
     if not ref:
         return None
@@ -194,7 +206,7 @@ def load_bridge():
     """Load bridge mappings (skill→memory)."""
     bridge_nodes = BRIDGE / "bridge_nodes.json"
     if bridge_nodes.exists():
-        with open(bridge_nodes) as f:
+        with open(bridge_nodes, encoding="utf-8") as f:
             return json.load(f)
     return []
 
@@ -202,7 +214,7 @@ def load_bridge():
 def load_memory_graph():
     """Load the memory graph."""
     if MEMORY_GRAPH.exists():
-        with open(MEMORY_GRAPH) as f:
+        with open(MEMORY_GRAPH, encoding="utf-8") as f:
             return json.load(f)
     return {"nodes": [], "edges": [], "hyperedges": []}
 
@@ -343,6 +355,7 @@ def find_relevant_nodes(query: str, intent: str, bridge: list, graph: dict) -> l
                             "label": node.get("label"),
                             "type": "skill_reference",
                             "confidence": confidence,
+                            "content": None,
                         })
                         seen_ids.add(node_id)
                     # Make the bridge real: pull the linked memory node.
@@ -355,6 +368,7 @@ def find_relevant_nodes(query: str, intent: str, bridge: list, graph: dict) -> l
                                 "label": mem.get("label"),
                                 "type": mem.get("type"),
                                 "confidence": mem_conf,
+                                "content": _short_content(mem),
                             })
                             seen_ids.add(mem.get("id"))
 
@@ -376,6 +390,7 @@ def find_relevant_nodes(query: str, intent: str, bridge: list, graph: dict) -> l
                 "label": node.get("label"),
                 "type": node.get("type"),
                 "confidence": round(confidence, 3),
+                "content": _short_content(node),
             })
 
     # 3. Fallback: return high-confidence nodes by intent
@@ -390,6 +405,7 @@ def find_relevant_nodes(query: str, intent: str, bridge: list, graph: dict) -> l
                             "label": node.get("label"),
                             "type": node.get("type"),
                             "confidence": 0.85,
+                            "content": _short_content(node),
                         })
                     break
     
@@ -399,45 +415,58 @@ def find_relevant_nodes(query: str, intent: str, bridge: list, graph: dict) -> l
 
 
 def estimate_tokens(nodes: list) -> int:
-    """Estimate token count for nodes."""
-    # Rough estimate: ~10 tokens per label + 100 per node
-    return sum(100 + 10 * len(n.get("label", "")) for n in nodes)
+    """Estimate token count from returned label + content (chars/4, labelled estimate)."""
+    total = 0
+    for node in nodes or []:
+        text = node.get("label") or ""
+        content = node.get("content")
+        if content:
+            text = f"{text} {content}"
+        # chars/4 estimate plus small per-node overhead (JSON/fields)
+        total += max(1, len(text) // 4 + 2)
+    return total
 
 
 def write_audit(query: str, intent: str, matched: list, excluded: list, tokens_used: int):
-    """Write audit entry to log."""
-    if not AUDIT_LOG.exists():
-        AUDIT_LOG.write_text("# HLCO Audit Log\n\n")
-    
-    # Load existing log
-    log_text = AUDIT_LOG.read_text()
-    lines = log_text.strip().split("\n")
-    
-    # Trim if over limit
+    """Append an audit entry (never rewrite the whole file)."""
     max_lines = load_config().get("audit_max_lines", 5000)
-    if len(lines) >= max_lines:
-        lines = lines[-(max_lines - 10):]
-        log_text = "\n".join(lines) + "\n"
-    
-    # Append new entry
+
+    # Trim if over limit: rewrite with utf-8 (only when needed).
+    if AUDIT_LOG.exists():
+        try:
+            lines = AUDIT_LOG.read_text(encoding="utf-8").splitlines()
+        except Exception:
+            lines = []
+        if len(lines) >= max_lines:
+            trimmed = lines[-(max_lines - 10):]
+            AUDIT_LOG.write_text("\n".join(trimmed) + "\n", encoding="utf-8")
+
+    # Header for a fresh log.
+    if not AUDIT_LOG.exists() or AUDIT_LOG.stat().st_size == 0:
+        with open(AUDIT_LOG, "w", encoding="utf-8") as f:
+            f.write("# HLCO Audit Log\n\n")
+
+    # Excluded-nodes check via set.
+    matched_ids = {m.get("id") for m in (matched or [])}
+    excluded_ids = {n.get("id") for n in (excluded or []) if n.get("id") not in matched_ids}
+
     timestamp = datetime.now().isoformat()
-    entry = f"""
-### Entry {timestamp}
-**Query:** "{query}"
-**Intent:** {intent}
-**Loaded Nodes:**
-"""
-    for node in matched:
-        entry += f"- {node['label']} [confidence: {node['confidence']:.2f}]\n"
-    
-    if excluded:
-        entry += "**Excluded:**\n"
-        for node in excluded[:5]:  # Limit excluded listing
-            entry += f"- {node.get('label', 'unknown')}\n"
-    
-    entry += f"**Total Tokens:** {tokens_used}\n---\n"
-    
-    AUDIT_LOG.write_text(log_text + entry)
+    entry_lines = [
+        f"### Entry {timestamp}",
+        f'**Query:** "{query}"',
+        f"**Intent:** {intent}",
+        "**Loaded Nodes:**",
+    ]
+    for node in matched or []:
+        entry_lines.append(f"- {node['label']} [confidence: {node['confidence']:.2f}]")
+    if excluded_ids:
+        entry_lines.append("**Excluded (count):** " + str(len(excluded_ids)))
+    entry_lines.append(f"**Total Tokens:** {tokens_used}")
+    entry_lines.append("---")
+    entry = "\n".join(entry_lines) + "\n"
+
+    with open(AUDIT_LOG, "a", encoding="utf-8") as f:
+        f.write(entry)
 
 
 def resolve_query(query: str, budget: int = None, edge_limit: int = 3) -> dict:
@@ -482,14 +511,26 @@ def resolve_query(query: str, budget: int = None, edge_limit: int = 3) -> dict:
                 "type": node.get("type"),
                 "confidence": 0.6,  # Lower confidence for edge-followed nodes
                 "source": "edge_expansion",
+                "content": _short_content(node),
             })
-    
-    # Budget enforcement
+
+    # Budget enforcement: greedy by confidence, never exceed budget
+    matched.sort(key=lambda x: x.get("confidence", 0), reverse=True)
+    selected = []
+    used = 0
+    for node in matched:
+        cost = estimate_tokens([node])
+        if not selected or used + cost <= budget:
+            selected.append(node)
+            used += cost
+        else:
+            # Even if over budget, keep at least one node
+            if not selected:
+                selected.append(node)
+                used += cost
+    matched = selected
     estimated = estimate_tokens(matched)
-    if estimated > budget:
-        matched = matched[:max(1, int(budget / 100))]
-        estimated = estimate_tokens(matched)
-    
+
     # Audit
     excluded = [n for n in graph.get("nodes", []) if n.get("id") not in [m["id"] for m in matched]]
     write_audit(query, intent, matched, excluded, estimated)
