@@ -21,6 +21,21 @@ from datetime import datetime
 import re
 from cache import cache
 
+STOPWORDS = {
+    "a", "an", "the", "is", "are", "was", "were", "be", "been", "being",
+    "what", "is", "my", "your", "our", "to", "of", "in", "on", "for", "and",
+    "or", "how", "do", "i", "me", "we", "it", "this", "that", "these",
+    "those", "with", "as", "at", "by", "from", "into",
+}
+
+
+def _tokenize(text: str) -> set:
+    if not text:
+        return set()
+    toks = set(re.findall(r"[a-z0-9]+", str(text).lower()))
+    return {t for t in toks if t not in STOPWORDS}
+
+
 def _env(primary, *fallbacks):
     """Read env var with deprecated-name fallbacks. Returns None if unset/empty."""
     for name in (primary,) + tuple(fallbacks):
@@ -310,18 +325,25 @@ def find_relevant_nodes(query: str, intent: str, bridge: list, graph: dict) -> l
                             "confidence": confidence,
                         })
 
-    # 2. Match by memory node content (token-overlap done in chunk 3; keep substring for now)
+    # 2. Match by memory node content (token overlap, no hardcoded substring)
+    query_tokens = _tokenize(query)
     for node in graph.get("nodes", []):
-        label = node.get("label", "").lower()
-        if query_lower in label:
-            confidence = 0.95
-            if confidence >= threshold:
-                matched.append({
-                    "id": node.get("id"),
-                    "label": node.get("label"),
-                    "type": node.get("type"),
-                    "confidence": confidence,
-                })
+        label_tokens = _tokenize(node.get("label", ""))
+        if not label_tokens:
+            continue
+        overlap = query_tokens & label_tokens
+        if not overlap:
+            continue
+        # score: proportion of label tokens matched
+        score = len(overlap) / len(label_tokens)
+        confidence = 0.8 + 0.15 * score
+        if confidence >= threshold:
+            matched.append({
+                "id": node.get("id"),
+                "label": node.get("label"),
+                "type": node.get("type"),
+                "confidence": round(confidence, 3),
+            })
 
     # 3. Fallback: return high-confidence nodes by intent
     if not matched:
