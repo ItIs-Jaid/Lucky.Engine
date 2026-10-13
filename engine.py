@@ -12,46 +12,151 @@ Threat model:
 """
 
 import json
+import os
+import urllib
+import urllib.error
+import urllib.request
 from pathlib import Path
 from datetime import datetime
 import re
-import os
 from cache import cache
 
+def _env(primary, *fallbacks):
+    """Read env var with deprecated-name fallbacks. Returns None if unset/empty."""
+    for name in (primary,) + tuple(fallbacks):
+        val = os.environ.get(name)
+        if val:
+            return val
+    return None
+
+
 # Paths — bridge dir is wherever this file lives; memory graph is one level up
-# (override with HLCO_MEMORY_GRAPH env var if your layout differs)
+# (override with LUCKY_MEMORY_GRAPH / deprecated HLCO_MEMORY_GRAPH env var)
 BRIDGE = Path(__file__).resolve().parent
-MEMORY_GRAPH = Path(os.environ.get("HLCO_MEMORY_GRAPH", BRIDGE.parent / "graph.json"))
+MEMORY_GRAPH = Path(
+    _env("LUCKY_MEMORY_GRAPH", "HLCO_MEMORY_GRAPH") or str(BRIDGE.parent / "graph.json")
+)
 AUDIT_LOG = BRIDGE / "lucky-audit.md"
-CONFIG_FILE = BRIDGE / "lucky-config.yaml"
+_config_env = _env("LUCKY_CONFIG_FILE", "HLCO_CONFIG_FILE")
+CONFIG_FILE = Path(_config_env) if _config_env else BRIDGE / "lucky-config.yaml"
+
+
+def _parse_scalar(value: str):
+    value = value.strip()
+    lowered = value.lower()
+    if lowered in ("true", "false"):
+        return lowered == "true"
+    if value == "":
+        return None
+    try:
+        return int(value)
+    except ValueError:
+        pass
+    try:
+        return float(value)
+    except ValueError:
+        pass
+    if len(value) >= 2 and ((value[0] == value[-1] == '"') or (value[0] == value[-1] == "'")):
+        return value[1:-1]
+    return value
+
+
+_DEFAULT_CONFIG = {
+    "max_tokens": 2000,
+    "confidence_threshold": 0.8,
+    "audit_max_lines": 5000,
+    "default_budget": 500,
+    "fallback_budget": 1500,
+    "cache_enabled": False,
+    "skill_weights": {},
+    "intent_keywords": {
+        "finances": "financial",
+        "move": "relocation",
+        "hermes": "agent_config",
+        "memory": "memory_structure",
+        "graph": "graph",
+        "config": "configuration",
+        "skill": "skills",
+        "ssh": "ssh",
+        "tailscale": "network",
+        "todo": "tasks",
+    },
+    "intent_priorities": {
+        "financial": ["Move Fund", "Income Bridge", "Finances"],
+        "relocation": ["Move Plan", "Move Target"],
+        "agent_config": ["Hermes Agent", "Profile"],
+        "general": ["User Mirror", "Memory SSOT"],
+    },
+}
 
 
 def load_config():
-    """Load HLCO configuration (simple key-value parser)."""
-    if CONFIG_FILE.exists():
-        config = {}
-        with open(CONFIG_FILE) as f:
-            for line in f:
-                line = line.strip()
-                if line and not line.startswith("#"):
-                    if ":" in line:
-                        key, val = line.split(":", 1)
-                        config[key.strip()] = val.strip()
-        # Convert to proper types
-        result = {
-            "max_tokens": int(config.get("max_tokens", 2000)),
-            "confidence_threshold": float(config.get("confidence_threshold", 0.8)),
-            "audit_max_lines": int(config.get("audit_max_lines", 5000)),
-            "default_budget": int(config.get("default_budget", 500)),
-        }
-        return result
-    
-    return {
-        "max_tokens": 2000,
-        "confidence_threshold": 0.8,
-        "audit_max_lines": 5000,
-        "default_budget": 500,
-    }
+    """Load Lucky.Engine configuration (nested YAML subset, stdlib only)."""
+    path = CONFIG_FILE
+    if not path.exists():
+        return dict(_DEFAULT_CONFIG)
+
+    config: dict = {}
+    current: str | None = None
+
+    with open(path, encoding="utf-8") as f:
+        for raw in f:
+            line = raw.rstrip("\n")
+            stripped = line.strip()
+            if not stripped or stripped.startswith("#"):
+                continue
+            indent = len(line) - len(line.lstrip())
+            if ":" not in stripped:
+                continue
+            key, _, val = stripped.partition(":")
+            key = key.strip()
+            val = val.strip()
+            if indent == 0:
+                current = None
+                if val == "":
+                    config[key] = {}
+                    current = key
+                else:
+                    # inline dict on one line isn't supported; scalar
+                    config[key] = _parse_scalar(val)
+            else:
+                # indented child
+                parent = current
+                if parent is None:
+                    # infer parent: last dict at top level
+                    for k in reversed(list(config)):
+                        if isinstance(config[k], dict):
+                            parent = k
+                            current = k
+                            break
+                if parent is not None and isinstance(config.get(parent), dict):
+                    config[parent][key] = _parse_scalar(val)
+
+    # Merge with defaults
+    result = dict(_DEFAULT_CONFIG)
+    for k, v in config.items():
+        if k in result and isinstance(result[k], dict) and isinstance(v, dict):
+            result[k] = {**result[k], **v}
+        else:
+            result[k] = v
+
+    # Type coercion for known keys
+    result["max_tokens"] = int(result.get("max_tokens", _DEFAULT_CONFIG["max_tokens"]))
+    result["confidence_threshold"] = float(result.get("confidence_threshold", _DEFAULT_CONFIG["confidence_threshold"]))
+    result["audit_max_lines"] = int(result.get("audit_max_lines", _DEFAULT_CONFIG["audit_max_lines"]))
+    result["default_budget"] = int(result.get("default_budget", _DEFAULT_CONFIG["default_budget"]))
+    result["fallback_budget"] = int(result.get("fallback_budget", _DEFAULT_CONFIG["fallback_budget"]))
+    result["cache_enabled"] = bool(result.get("cache_enabled", _DEFAULT_CONFIG["cache_enabled"]))
+    result["skill_weights"] = dict(result.get("skill_weights", {}) or {})
+    result["intent_keywords"] = dict(result.get("intent_keywords", {}) or {})
+    result["intent_priorities"] = dict(result.get("intent_priorities", {}) or {})
+
+    if not result["intent_keywords"]:
+        result["intent_keywords"] = dict(_DEFAULT_CONFIG["intent_keywords"])
+    if not result["intent_priorities"]:
+        result["intent_priorities"] = dict(_DEFAULT_CONFIG["intent_priorities"])
+
+    return result
 
 
 def load_bridge():
@@ -95,47 +200,40 @@ def get_connected_nodes(graph: dict, node_id: str, edge_limit: int = 3) -> list:
 
 
 def extract_intent(query: str) -> str:
-    """Extract primary intent from query using LLM when available, fallback to keyword matching."""
-    
+    """Extract primary intent from query using LLM when available, keyword fallback."""
     # Check for LLM API key
-    api_key = os.environ.get("HLCO_LLM_API_KEY")
-    
+    api_key = _env("LUCKY_LLM_API_KEY", "HLCO_LLM_API_KEY")
+
     if api_key:
         # Use LLM-based classification
         return classify_intent_llm(query)
-    
+
     # Fallback to keyword matching
+    return _keyword_intent(query)
+
+
+def _keyword_intent(query: str) -> str:
+    """Keyword intent classifier (also LLM fallback)."""
     query_lower = query.lower()
-    
-    # Intent mapping
-    intents = [
-        ("finances", "financial"),
-        ("move", "relocation"),
-        ("hermes", "agent_config"),
-        ("memory", "memory_structure"),
-        ("graph", "graph"),
-        ("config", "configuration"),
-        ("skill", "skills"),
-        ("ssh", "ssh"),
-        ("tailscale", "network"),
-        ("todo", "tasks"),
-    ]
-    
-    for keyword, intent in intents:
+    try:
+        keywords = load_config().get("intent_keywords", {})
+    except Exception:
+        keywords = {}
+    if not keywords:
+        keywords = _DEFAULT_CONFIG["intent_keywords"]
+    for keyword, intent in keywords.items():
         if keyword in query_lower:
             return intent
-    
     return "general"
 
 
 def classify_intent_llm(query: str) -> str:
     """Classify intent using LLM API when key is available."""
-    import urllib.request
-    import urllib.error
-    
-    # Try OpenAI-compatible endpoint (default to localhost)
-    api_url = os.environ.get("HLCO_LLM_API_URL", "http://localhost:8080/v1/chat/completions")
-    
+    import json as _json
+
+    # Try OpenAI-compatible endpoint (LUCKY_ with deprecated HLCO_ fallback)
+    api_url = _env("LUCKY_LLM_API_URL", "HLCO_LLM_API_URL") or "http://localhost:8080/v1/chat/completions"
+
     system_prompt = """You are an intent classifier for a personal knowledge management system.
 Classify the user's query into one of these intents:
 - financial: Money, finances, budget, income, expenses, investments
@@ -152,35 +250,40 @@ Classify the user's query into one of these intents:
 Return ONLY the intent name, nothing else."""
 
     user_prompt = f"Query: {query}"
-    
+
     payload = {
         "model": "default",
         "messages": [
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt}
+            {"role": "user", "content": user_prompt},
         ],
         "temperature": 0.1,
-        "max_tokens": 20
+        "max_tokens": 20,
     }
-    
+
+    api_key = _env("LUCKY_LLM_API_KEY", "HLCO_LLM_API_KEY")
+    if not api_key:
+        return _keyword_intent(query)
+
+    headers = {"Content-Type": "application/json"}
+    headers["Authorization"] = f"Bearer {api_key}"
+
     try:
         req = urllib.request.Request(
             api_url,
-            data=json.dumps(payload).encode("utf-8"),
-            headers={
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json"
-            },
-            method="POST"
+            data=_json.dumps(payload).encode("utf-8"),
+            headers=headers,
+            method="POST",
         )
-        
+
         with urllib.request.urlopen(req, timeout=10) as response:
-            result = json.loads(response.read().decode("utf-8"))
+            result = _json.loads(response.read().decode("utf-8"))
             content = result.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
-            return content if content else "general"
-    
-    except (urllib.error.URLError, urllib.error.HTTPError, json.JSONDecodeError, KeyError, TimeoutError):
-        return "general"
+            return content if content else _keyword_intent(query)
+
+    except Exception:
+        # Network, parsing, key, timeout, etc. -> keyword fallback (never "general" blindly)
+        return _keyword_intent(query)
 
 
 def find_relevant_nodes(query: str, intent: str, bridge: list, graph: dict) -> list:
@@ -206,8 +309,8 @@ def find_relevant_nodes(query: str, intent: str, bridge: list, graph: dict) -> l
                             "type": "skill_reference",
                             "confidence": confidence,
                         })
-    
-    # 2. Match by memory node content
+
+    # 2. Match by memory node content (token-overlap done in chunk 3; keep substring for now)
     for node in graph.get("nodes", []):
         label = node.get("label", "").lower()
         if query_lower in label:
@@ -219,26 +322,20 @@ def find_relevant_nodes(query: str, intent: str, bridge: list, graph: dict) -> l
                     "type": node.get("type"),
                     "confidence": confidence,
                 })
-    
+
     # 3. Fallback: return high-confidence nodes by intent
     if not matched:
-        intent_priorities = {
-            "financial": ["Move Fund", "Income Bridge", "Finances"],
-            "relocation": ["Move Plan", "Move Target"],
-            "agent_config": ["Hermes Agent", "Profile"],
-            "general": ["User Mirror", "Memory SSOT"],
-        }
-        
-        priorities = intent_priorities.get(intent, intent_priorities["general"])
+        priorities = load_config().get("intent_priorities", {}).get(intent) or load_config().get("intent_priorities", {}).get("general", [])
         for node in graph.get("nodes", []):
             for priority in priorities:
                 if priority.lower() in node.get("label", "").lower():
-                    matched.append({
-                        "id": node.get("id"),
-                        "label": node.get("label"),
-                        "type": node.get("type"),
-                        "confidence": 0.85,
-                    })
+                    if 0.85 >= threshold:
+                        matched.append({
+                            "id": node.get("id"),
+                            "label": node.get("label"),
+                            "type": node.get("type"),
+                            "confidence": 0.85,
+                        })
                     break
     
     # Sort by confidence, limit by budget
