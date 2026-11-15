@@ -1,0 +1,86 @@
+[
+  {
+    "tid": "t001",
+    "func": "def f(n):\n    return [\"Fizz\" if x%15==0 else \"Buzz\" if x%5==0 else \"Fizz\" if x%3==0 else str(x) for x in range(1,n+1)]",
+    "io": "n = inp['n']",
+    "call": "n",
+    "check": "solution(n) == expected"
+  },
+  {
+    "tid": "t002",
+    "func": "def f(s):\n    return s[::-1]",
+    "io": "s = inp['s']",
+    "call": "s",
+    "check": "solution(s) == expected"
+  },
+  {
+    "tid": "t003",
+    "func": "def f(n):\n    a,b=0,1\n    for _ in range(n): a,b=b,a+b\n    return a",
+    "io": "n = inp['n']",
+    "call": "n",
+    "check": "solution(n) == expected"
+  },
+  {
+    "tid": "t004",
+    "func": "def f(n):\n    return n>1 and all(n%i for i in range(2,int(n**.5)+1))",
+    "io": "n = inp['n']",
+    "call": "n",
+    "check": "solution(n) == expected"
+  },
+  {
+    "tid": "t005",
+    "func": "def f(n):\n    r=1\n    for i in range(2,n+1): r*=i\n    return r",
+    "io": "n = inp['n']",
+    "call": "n",
+    "check": "solution(n) == expected"
+  },
+  {
+    "tid": "t006",
+    "func": "def f(s):\n    return sum(c.lower() in \"aeiou\" for c in s)",
+    "io": "s = inp['s']",
+    "call": "s",
+    "check": "solution(s) == expected"
+  },
+  {
+    "tid": "t007",
+    "func": "def f(s):\n    t=\"\".join(c.lower() for c in s if c.isalnum())\n    return t==t[::-1]",
+    "io": "s = inp['s']",
+    "call": "s",
+    "check": "solution(s) == expected"
+  },
+  {
+    "tid": "t008",
+    "func": "def f(a,b):\n    return a if a>b else b",
+    "io": "a = inp['a']; b = inp['b']",
+    "call": "a,b",
+    "check": "solution(a,b) == expected"
+  },
+  {
+    "tid": "t009",
+    "func": "def f(arr):\n    a=list(arr)\n    for i in range(len(a)):\n        for j in range(len(a)-1-i):\n            if a[j]>a[j+1]: a[j],a[j+1]=a[j+1],a[j]\n    return a",
+    "io": "arr = inp",
+    "call": "arr",
+    "check": "solution(arr) == expected"
+  },
+  {
+    "tid": "t010",
+    "func": "def f(s):\n    return \" \".join(s.split()[::-1])",
+    "io": "s = inp['s']",
+    "call": "s",
+    "check": "solution(s) == expected"
+  },
+  {
+    "tid": "t011",
+    "func": "def f(arr):\n    out=[]\n    for x in arr:\n        if isinstance(x,list): out+=f(x)\n        else: out.append(x)\n    return out",
+    "io": "arr = inp",
+    "call": "arr",
+    "check": "solution(arr) == expected"
+  },
+  {
+    "tid": "t012",
+    "func": "def f(a,b):\n    while b: a,b=b,a%b\n    return a",
+    "io": "a = inp['a']; b = inp['b']",
+    "call": "a,b",
+    "check": "solution(a,b) == expected"
+  }
+]

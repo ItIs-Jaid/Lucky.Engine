@@ -1,0 +1,552 @@
+[
+  {
+    "source": "SKILL-memory_graph_0",
+    "target": "SKILL-memory_graph_1",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-memory_graph_0",
+    "target": "SKILL-memory_graph_2",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-memory_graph_1",
+    "target": "SKILL-memory_graph_0",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-memory_graph_1",
+    "target": "SKILL-memory_graph_2",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-memory_graph_2",
+    "target": "SKILL-memory_graph_0",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-memory_graph_2",
+    "target": "SKILL-memory_graph_1",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-hermes_agent_0",
+    "target": "SKILL-hermes_agent_1",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-hermes_agent_0",
+    "target": "SKILL-hermes_agent_2",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-hermes_agent_1",
+    "target": "SKILL-hermes_agent_0",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-hermes_agent_1",
+    "target": "SKILL-hermes_agent_2",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-hermes_agent_2",
+    "target": "SKILL-hermes_agent_0",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-hermes_agent_2",
+    "target": "SKILL-hermes_agent_1",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-graphify_0",
+    "target": "SKILL-graphify_1",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-graphify_0",
+    "target": "SKILL-graphify_2",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-graphify_1",
+    "target": "SKILL-graphify_0",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-graphify_1",
+    "target": "SKILL-graphify_2",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-graphify_2",
+    "target": "SKILL-graphify_0",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-graphify_2",
+    "target": "SKILL-graphify_1",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-agent_skills_0",
+    "target": "SKILL-agent_skills_1",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-agent_skills_1",
+    "target": "SKILL-agent_skills_0",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-finances_0",
+    "target": "SKILL-finances_1",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-finances_0",
+    "target": "SKILL-finances_2",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-finances_1",
+    "target": "SKILL-finances_0",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-finances_1",
+    "target": "SKILL-finances_2",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-finances_2",
+    "target": "SKILL-finances_0",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-finances_2",
+    "target": "SKILL-finances_1",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-productivity_0",
+    "target": "SKILL-productivity_1",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-productivity_0",
+    "target": "SKILL-productivity_2",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-productivity_0",
+    "target": "SKILL-productivity_3",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-productivity_1",
+    "target": "SKILL-productivity_0",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-productivity_1",
+    "target": "SKILL-productivity_2",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-productivity_1",
+    "target": "SKILL-productivity_3",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-productivity_2",
+    "target": "SKILL-productivity_0",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-productivity_2",
+    "target": "SKILL-productivity_1",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-productivity_2",
+    "target": "SKILL-productivity_3",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-productivity_3",
+    "target": "SKILL-productivity_0",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-productivity_3",
+    "target": "SKILL-productivity_1",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-productivity_3",
+    "target": "SKILL-productivity_2",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-devops_0",
+    "target": "SKILL-devops_1",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-devops_1",
+    "target": "SKILL-devops_0",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-research_0",
+    "target": "SKILL-research_1",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-research_1",
+    "target": "SKILL-research_0",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-security_0",
+    "target": "SKILL-security_1",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-security_1",
+    "target": "SKILL-security_0",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-software_development_0",
+    "target": "SKILL-software_development_1",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-software_development_1",
+    "target": "SKILL-software_development_0",
+    "type": "skill_related"
+  },
+  {
+    "source": "SKILL-memory_graph_2",
+    "target": "SKILL-note_taking_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-note_taking_0",
+    "target": "SKILL-memory_graph_2",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-hermes_agent_0",
+    "target": "SKILL-devops_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-hermes_agent_0",
+    "target": "SKILL-github_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-hermes_agent_0",
+    "target": "SKILL-autonomous_ai_agents_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-devops_0",
+    "target": "SKILL-hermes_agent_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-devops_0",
+    "target": "SKILL-github_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-devops_0",
+    "target": "SKILL-autonomous_ai_agents_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-github_0",
+    "target": "SKILL-hermes_agent_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-github_0",
+    "target": "SKILL-devops_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-github_0",
+    "target": "SKILL-autonomous_ai_agents_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-autonomous_ai_agents_0",
+    "target": "SKILL-hermes_agent_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-autonomous_ai_agents_0",
+    "target": "SKILL-devops_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-autonomous_ai_agents_0",
+    "target": "SKILL-github_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-agent_skills_0",
+    "target": "SKILL-productivity_2",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-agent_skills_0",
+    "target": "SKILL-research_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-agent_skills_0",
+    "target": "SKILL-software_development_1",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-agent_skills_0",
+    "target": "SKILL-project_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-productivity_2",
+    "target": "SKILL-agent_skills_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-productivity_2",
+    "target": "SKILL-research_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-productivity_2",
+    "target": "SKILL-software_development_1",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-productivity_2",
+    "target": "SKILL-project_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-research_0",
+    "target": "SKILL-agent_skills_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-research_0",
+    "target": "SKILL-productivity_2",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-research_0",
+    "target": "SKILL-software_development_1",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-research_0",
+    "target": "SKILL-project_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-software_development_1",
+    "target": "SKILL-agent_skills_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-software_development_1",
+    "target": "SKILL-productivity_2",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-software_development_1",
+    "target": "SKILL-research_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-software_development_1",
+    "target": "SKILL-project_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-project_0",
+    "target": "SKILL-agent_skills_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-project_0",
+    "target": "SKILL-productivity_2",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-project_0",
+    "target": "SKILL-research_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-project_0",
+    "target": "SKILL-software_development_1",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-agent_skills_1",
+    "target": "SKILL-research_1",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-agent_skills_1",
+    "target": "SKILL-software_development_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-agent_skills_1",
+    "target": "SKILL-creative_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-research_1",
+    "target": "SKILL-agent_skills_1",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-research_1",
+    "target": "SKILL-software_development_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-research_1",
+    "target": "SKILL-creative_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-software_development_0",
+    "target": "SKILL-agent_skills_1",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-software_development_0",
+    "target": "SKILL-research_1",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-software_development_0",
+    "target": "SKILL-creative_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-creative_0",
+    "target": "SKILL-agent_skills_1",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-creative_0",
+    "target": "SKILL-research_1",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-creative_0",
+    "target": "SKILL-software_development_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-finances_0",
+    "target": "SKILL-productivity_1",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-productivity_1",
+    "target": "SKILL-finances_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-finances_1",
+    "target": "SKILL-productivity_3",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-productivity_3",
+    "target": "SKILL-finances_1",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-devops_1",
+    "target": "SKILL-security_1",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-devops_1",
+    "target": "SKILL-mlops_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-devops_1",
+    "target": "SKILL-mcp_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-security_1",
+    "target": "SKILL-devops_1",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-security_1",
+    "target": "SKILL-mlops_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-security_1",
+    "target": "SKILL-mcp_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-mlops_0",
+    "target": "SKILL-devops_1",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-mlops_0",
+    "target": "SKILL-security_1",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-mlops_0",
+    "target": "SKILL-mcp_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-mcp_0",
+    "target": "SKILL-devops_1",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-mcp_0",
+    "target": "SKILL-security_1",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-mcp_0",
+    "target": "SKILL-mlops_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-security_0",
+    "target": "SKILL-learning_0",
+    "type": "shared_memory_ref"
+  },
+  {
+    "source": "SKILL-learning_0",
+    "target": "SKILL-security_0",
+    "type": "shared_memory_ref"
+  }
+]

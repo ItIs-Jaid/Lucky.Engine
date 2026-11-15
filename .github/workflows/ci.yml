@@ -1,0 +1,34 @@
+name: Lucky.Engine CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify-stdlib-core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run Layer 2 tests (router, gateway, public)
+        run: |
+          python test_router.py
+          python test_gateway.py
+          python test_public.py
+      - name: Run Layer 1 bridge tests
+        run: |
+          python bridge/test_suite.py
+          python -m unittest discover -s bridge/tests
+      - name: Run deterministic evals
+        run: |
+          python bridge/eval/runner.py
+          python evals/routing.py
+          python harness/run_experiment.py --axis1
+      - name: Run publication scrub gates
+        run: |
+          python check_public.py --path public/
+          python check_public.py --path public_bench/

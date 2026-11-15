@@ -1,0 +1,126 @@
+{
+  "framework": "lucky-engine",
+  "generated": "2026-10-19",
+  "tasks": [
+    {
+      "id": "t001",
+      "category": "loop",
+      "prompt": "Write a program that prints the numbers from 1 to n. But for multiples of three print \"Fizz\" instead of the number and for the multiples of five print \"Buzz\". For numbers which are multiples of both three and five print \"FizzBuzz\". Input is n.",
+      "input_file": "inputs/t001.json",
+      "expected_file": "expected/t001.json",
+      "verifier": "verifiers/t001.py",
+      "min_lines": 8,
+      "max_lines": 15
+    },
+    {
+      "id": "t002",
+      "category": "string",
+      "prompt": "Write a function reverse_string(s) that returns the reversed version of the input string. Input is a single string.",
+      "input_file": "inputs/t002.json",
+      "expected_file": "expected/t002.json",
+      "verifier": "verifiers/t002.py",
+      "min_lines": 1,
+      "max_lines": 5
+    },
+    {
+      "id": "t003",
+      "category": "recursion",
+      "prompt": "Write a function fibonacci(n) that returns the nth Fibonacci number (fib(0)=0, fib(1)=1). Input is an integer n.",
+      "input_file": "inputs/t003.json",
+      "expected_file": "expected/t003.json",
+      "verifier": "verifiers/t003.py",
+      "min_lines": 1,
+      "max_lines": 8
+    },
+    {
+      "id": "t004",
+      "category": "math",
+      "prompt": "Write a function is_prime(n) that returns True if n is a prime number and False otherwise. Input is an integer n.",
+      "input_file": "inputs/t004.json",
+      "expected_file": "expected/t004.json",
+      "verifier": "verifiers/t004.py",
+      "min_lines": 1,
+      "max_lines": 8
+    },
+    {
+      "id": "t005",
+      "category": "math",
+      "prompt": "Write a function factorial(n) that returns n! (n factorial). Input is a non-negative integer n.",
+      "input_file": "inputs/t005.json",
+      "expected_file": "expected/t005.json",
+      "verifier": "verifiers/t005.py",
+      "min_lines": 1,
+      "max_lines": 6
+    },
+    {
+      "id": "t006",
+      "category": "string",
+      "prompt": "Write a function count_vowels(s) that returns the number of vowel characters (a, e, i, o, u, case-insensitive) in the input string. Input is a single string.",
+      "input_file": "inputs/t006.json",
+      "expected_file": "expected/t006.json",
+      "verifier": "verifiers/t006.py",
+      "min_lines": 1,
+      "max_lines": 6
+    },
+    {
+      "id": "t007",
+      "category": "string",
+      "prompt": "Write a function is_palindrome(s) that returns True if the input string reads the same forward and backward (ignoring case and non-alphanumeric characters), and False otherwise. Input is a single string.",
+      "input_file": "inputs/t007.json",
+      "expected_file": "expected/t007.json",
+      "verifier": "verifiers/t007.py",
+      "min_lines": 1,
+      "max_lines": 8
+    },
+    {
+      "id": "t008",
+      "category": "math",
+      "prompt": "Write a function max_of_two(a, b) that returns the larger of the two input numbers. Input is two integers.",
+      "input_file": "inputs/t008.json",
+      "expected_file": "expected/t008.json",
+      "verifier": "verifiers/t008.py",
+      "min_lines": 1,
+      "max_lines": 4
+    },
+    {
+      "id": "t009",
+      "category": "sort",
+      "prompt": "Write a function bubble_sort(arr) that sorts a list of integers in ascending order using the bubble sort algorithm. Input is a JSON array of integers.",
+      "input_file": "inputs/t009.json",
+      "expected_file": "expected/t009.json",
+      "verifier": "verifiers/t009.py",
+      "min_lines": 4,
+      "max_lines": 12
+    },
+    {
+      "id": "t010",
+      "category": "string",
+      "prompt": "Write a function reverse_words(s) that reverses the order of words in a sentence. Input is a string of words separated by single spaces. Output words should be in reversed order, joined by single spaces.",
+      "input_file": "inputs/t010.json",
+      "expected_file": "expected/t010.json",
+      "verifier": "verifiers/t010.py",
+      "min_lines": 1,
+      "max_lines": 6
+    },
+    {
+      "id": "t011",
+      "category": "list",
+      "prompt": "Write a function flatten(arr) that takes a nested list of integers and returns a flat list of all integers in order. Input is a nested list.",
+      "input_file": "inputs/t011.json",
+      "expected_file": "expected/t011.json",
+      "verifier": "verifiers/t011.py",
+      "min_lines": 3,
+      "max_lines": 10
+    },
+    {
+      "id": "t012",
+      "category": "math",
+      "prompt": "Write a function gcd(a, b) that returns the greatest common divisor of a and b using Euclid's algorithm. Input is two positive integers.",
+      "input_file": "inputs/t012.json",
+      "expected_file": "expected/t012.json",
+      "verifier": "verifiers/t012.py",
+      "min_lines": 1,
+      "max_lines": 8
+    }
+  ]
+}

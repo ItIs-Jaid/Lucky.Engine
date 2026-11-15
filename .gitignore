@@ -1,34 +1,28 @@
-# Lucky.Engine .gitignore
-# Prevents personal data and private configs from leaking to GitHub
-
-## Memory Data (Do NOT commit these)
-memory/*.md
-memory/*.txt
-memory/graphify-out/graph.json
-memory/graphify-out/GRAPH_REPORT.md
-memory/graphify-out/manifest.json
-memory/corpus/
-
-## Personal Credentials
-*.keys
-*.pem
-secrets.json
-.env
-
-## Generated Files
+# Python
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+*$py.class
+.venv/
 .pytest_cache/
-.pylintrc
-.idea/
-.vscode/
 
-## Logs
-*.log
-logs/
+# Lucky.Engine local runtime artifacts & private logs
+bridge/lucky-audit.md
+bridge/.lucky_cache.json
+bridge/benchmark_results.json
+bridge/stress_test_results.json
+benchmark/solutions/
+results/*.json
+!public/catalog.json
+!public/public_graph.json
+!bridge/eval/queries.json
+!bridge/tests/fixtures/*.json
+!benchmark/meta.json
+!benchmark/task_specs.json
+!benchmark/inputs/*.json
+!benchmark/expected/*.json
+!harness/firebase/firebase.json
+!harness/firebase/firestore.indexes.json
 
-## Live/generated data (local only, never commit)
-lucky-audit.md
-benchmark_results.json
-stress_test_results.json
+# OS / IDE
+.DS_Store
+Thumbs.db

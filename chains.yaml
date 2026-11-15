@@ -1,0 +1,267 @@
+# Lucky.Engine 1.5.0 — chains as judged loops joined by gateways
+#
+# A chain is an ordered list of LOOPS. Every loop ends at a GATEWAY that judges its goal.
+# Gateway outcomes: advance | pushback | deliver | redirect | hitl
+#
+# Points: cost = max(1, power + retries). Cap by urgency:
+#   urgent 2 · normal 5 · exploratory 14   (hard ceiling 14)
+# Under cap -> forward to the next loop. At/over cap -> human in the loop.
+version: "1.5.0"
+defaults:
+  max_context_tokens: 350
+  loop_max_iter: 5
+  ledger: .lucky/ledger.jsonl
+
+chains:
+  - id: research-synthesis
+    root: R-RESEARCH-SYNTHESIS
+    keywords: [research, cite, citation, sources, report, literature, survey]
+    when:
+      any: [research-process, academic-research, grounded-citations, reference-compilation]
+      count_gte: 3
+    tiers:
+      urgent: [LQ-answer]
+      normal: [LQ-answer, LQ-evidence]
+      exploratory: [LQ-answer, LQ-evidence, LQ-stress]
+    loops:
+      - id: LQ-answer
+        goal: "a direct answer exists, with its falsifier"
+        nodes: [S-context-pack, S-question-frame, S-synthesis]
+        exit: answer_written
+        gateway:
+          judge: artifact_exists
+          power: 1
+          pass: advance
+          fail: pushback
+      - id: LQ-evidence
+        goal: "every claim carries a resolvable source"
+        nodes: [S-source-discovery, S-source-triage, S-claim-extract, S-cite-verify]
+        exit: claims_cited
+        gateway:
+          judge: claims_cited
+          power: 2
+          pass: advance
+          fail: pushback
+      - id: LQ-stress
+        goal: "the contested claim survives an adversarial source"
+        nodes: [S-claim-extract, S-cite-verify]
+        exit: contested_resolved
+        gateway:
+          judge: claims_cited
+          power: 3
+          pass: deliver
+          fail: hitl
+    end_output:
+      artifact: report.md
+      gate: "every claim maps to a resolvable url or file path"
+
+  - id: delegated-build
+    root: R-DELEGATED-BUILD
+    keywords: [build, implement, refactor, feature, fix, code, test]
+    when:
+      any: [subagent-delegation, subagent-driven-development, agentic-teams, multi-tier-agentic-build]
+      count_gte: 3
+    tiers:
+      urgent: [LQ-slice, LQ-gate]
+      normal: [LQ-scope, LQ-slice, LQ-gate]
+      exploratory: [LQ-scope, LQ-slice, LQ-stress, LQ-gate]
+    loops:
+      - id: LQ-scope
+        goal: "one failing test proves the work is real"
+        nodes: [S-context-pack, S-scope-lock, S-repo-map, S-test-first]
+        exit: red_captured
+        gateway:
+          judge: red_captured
+          power: 1
+          pass: advance
+          fail: pushback
+      - id: LQ-slice
+        goal: "one thin slice is green and reviewed"
+        nodes: [S-slice-build, S-review-slice]
+        exit: tests_green
+        gateway:
+          judge: tests_green
+          power: 2
+          pass: advance
+          fail: pushback
+      - id: LQ-stress
+        goal: "the diff survives a hostile read"
+        nodes: [S-review-slice]
+        exit: review_clean
+        gateway:
+          judge: tests_green
+          power: 3
+          pass: advance
+          fail: pushback
+      - id: LQ-gate
+        goal: "execution evidence exists for the whole suite"
+        nodes: [S-gate-verify]
+        exit: tests_green
+        gateway:
+          judge: tests_green
+          power: 4
+          pass: deliver
+          fail: hitl
+    end_output:
+      artifact: change-set
+      gate: "tests pass, lint clean, ponytail diff review attached"
+
+  - id: move-and-relocate
+    root: R-MOVE-DECISION
+    keywords: [move, relocate, apartment, rent, city, neighborhood, region, relocation, lease, commute]
+    when:
+      any: [relocation-planning, relocation-logistics, apartment-hunting, rental-listing-verification, transit-commute-rental-search]
+      count_gte: 3
+    tiers:
+      urgent: [LQ-verify]
+      normal: [LQ-criteria, LQ-verify, LQ-cost]
+      exploratory: [LQ-criteria, LQ-verify, LQ-cost, LQ-risk]
+    loops:
+      - id: LQ-criteria
+        goal: "hard filters are numeric, not adjectives"
+        nodes: [S-context-pack, S-criteria-lock, S-market-scan]
+        exit: criteria_locked
+        gateway:
+          judge: manual
+          power: 1
+          pass: advance
+          fail: pushback
+      - id: LQ-verify
+        goal: "every candidate links to a live verified listing"
+        nodes: [S-listing-verify]
+        exit: listings_verified
+        gateway:
+          judge: listings_verified
+          power: 2
+          pass: advance
+          fail: pushback
+      - id: LQ-cost
+        goal: "first-year cost computed for each survivor"
+        nodes: [S-cost-model, S-decision]
+        exit: cost_modeled
+        gateway:
+          judge: manual
+          power: 3
+          pass: advance
+          fail: pushback
+      - id: LQ-risk
+        goal: "walk-away conditions and downside are written"
+        nodes: [S-decision]
+        exit: risk_written
+        gateway:
+          judge: manual
+          power: 4
+          pass: deliver
+          fail: hitl
+    end_output:
+      artifact: decision-brief.md
+      gate: "every listing verified by live url with price and date"
+
+  - id: skill-forging
+    root: R-SKILL-SYSTEM
+    keywords: [skill, skills, agent, hermes, prompt, boost, chain, router]
+    when:
+      any: [hermes-agent, hermes-agent-skill-authoring, agent-skill-management, boost, cli-reference]
+      count_gte: 3
+    tiers:
+      urgent: [LQ-test]
+      normal: [LQ-audit, LQ-test, LQ-ship]
+      exploratory: [LQ-audit, LQ-test, LQ-ship]
+    loops:
+      - id: LQ-audit
+        goal: "no duplicate skill: patch, merge, or create is decided"
+        nodes: [S-context-pack, S-skill-audit, S-skill-draft]
+        exit: decision_made
+        gateway:
+          judge: manual
+          power: 1
+          pass: advance
+          fail: pushback
+      - id: LQ-test
+        goal: "the skill loads and step one runs with zero guesses"
+        nodes: [S-skill-test, S-boost-gate]
+        exit: skill_loads
+        gateway:
+          judge: skill_loads
+          power: 2
+          pass: advance
+          fail: redirect
+          redirect_to: delegated-build
+      - id: LQ-ship
+        goal: "the skill is written to the pool with its gate attached"
+        nodes: [S-synthesis]
+        exit: artifact_written
+        gateway:
+          judge: artifact_exists
+          power: 3
+          pass: deliver
+          fail: hitl
+    end_output:
+      artifact: SKILL.md
+      gate: "9-gate boost checklist passes and skill loads in a live session"
+
+  - id: security-review
+    root: R-SECURITY-POSTURE
+    keywords: [security, defend, monitor, threat, vuln, harden, incident]
+    when:
+      any: [host-security-monitoring, identity-monitoring, cyber-defense-tools, oss-forensics, cisa-kev-briefing]
+      count_gte: 3
+    tiers:
+      urgent: [LQ-detect]
+      normal: [LQ-scope, LQ-detect, LQ-report]
+      exploratory: [LQ-scope, LQ-detect, LQ-report]
+    loops:
+      - id: LQ-scope
+        goal: "assets, owners and crown jewels are named"
+        nodes: [S-context-pack, S-asset-scope, S-threat-model]
+        exit: scope_locked
+        gateway:
+          judge: manual
+          power: 1
+          pass: advance
+          fail: pushback
+      - id: LQ-detect
+        goal: "every gap is ranked with evidence"
+        nodes: [S-detection-gap]
+        exit: gaps_owned
+        gateway:
+          judge: gaps_owned
+          power: 2
+          pass: advance
+          fail: pushback
+      - id: LQ-report
+        goal: "each gap has asset, evidence and owner"
+        nodes: [S-report]
+        exit: report_written
+        gateway:
+          judge: gaps_owned
+          power: 3
+          pass: deliver
+          fail: hitl
+    end_output:
+      artifact: posture-review.md
+      gate: "every gap has asset, evidence, and owner"
+
+  - id: fallback
+    root: R-GENERIC-TASK
+    keywords: []
+    when:
+      any: []
+      count_gte: 99
+    tiers:
+      urgent: [LQ-plain]
+      normal: [LQ-plain]
+      exploratory: [LQ-plain]
+    loops:
+      - id: LQ-plain
+        goal: "one next action with an owner and a deadline"
+        nodes: [S-context-pack, S-question-frame, S-synthesis]
+        exit: next_action
+        gateway:
+          judge: manual
+          power: 1
+          pass: deliver
+          fail: hitl
+    end_output:
+      artifact: next-action.md
+      gate: "single next action stated with owner and deadline"

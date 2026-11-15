@@ -1,0 +1,167 @@
+rules_version = '2';
+
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// This security rules file assumes the following data structures
+// for Lucky.Engine's optional local/emulator evaluation & benchmark
+// telemetry harness:
+//
+// Collection: eval_runs/{runId}
+// Document ID: Auto-generated or caller-assigned run identifier
+// Fields:
+//   - ownerUid: string (required, immutable, 1..128 chars, == request.auth.uid)
+//   - version: string (required, 1..32 chars)
+//   - axis: string (required, 1..64 chars)
+//   - avgTokens: number (required, >= 0)
+//   - hitRate: number (required, >= 0 && <= 1)
+//   - passedCount: int (required, >= 0)
+//   - totalCount: int (required, >= 1 && passedCount <= totalCount)
+//   - createdAt: timestamp (required, immutable, == request.time on create)
+//
+// Collection: benchmark_snapshots/{snapId}
+// Document ID: Auto-generated or caller-assigned snapshot identifier
+// Fields:
+//   - ownerUid: string (required, immutable, 1..128 chars, == request.auth.uid)
+//   - version: string (required, 1..32 chars)
+//   - nodeCount: int (required, >= 0)
+//   - recall: number (required, >= 0 && <= 1)
+//   - latencyMs: number (required, >= 0)
+//   - createdAt: timestamp (required, immutable, == request.time on create)
+//
+// ===============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    // Check if the request is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if the authenticated user owns the existing document
+    function isDocOwner() {
+      return isAuthenticated() && resource.data.ownerUid == request.auth.uid;
+    }
+
+    // Verify ownerUid matches the authenticated user on create
+    function uidUnchanged() {
+      return request.resource.data.ownerUid == request.auth.uid;
+    }
+
+    // Ensure ownerUid is not modified on update
+    function uidNotModified() {
+      return request.resource.data.ownerUid == resource.data.ownerUid;
+    }
+
+    // Validate that all required fields exist
+    function hasRequiredFields(data, fields) {
+      return data.keys().hasAll(fields);
+    }
+
+    // Validate that the document contains only allowed fields
+    function hasOnlyAllowedFields(data, fields) {
+      return data.keys().hasOnly(fields);
+    }
+
+    // Ensure specified immutable fields are unchanged on update
+    function areImmutableFieldsUnchanged(fields) {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(fields);
+    }
+
+    // Validate a string's type and inclusive length bounds
+    function isValidString(val, minLen, maxLen) {
+      return val is string && val.size() >= minLen && val.size() <= maxLen;
+    }
+
+    // ===============================================================
+    // Domain Validators (Used in both create and update)
+    // ===============================================================
+
+    function isValidEvalRun(data) {
+      let allowedFields = [
+        'ownerUid',
+        'version',
+        'axis',
+        'avgTokens',
+        'hitRate',
+        'passedCount',
+        'totalCount',
+        'createdAt'
+      ];
+      return hasRequiredFields(data, allowedFields) &&
+             hasOnlyAllowedFields(data, allowedFields) &&
+             isValidString(data.ownerUid, 1, 128) &&
+             isValidString(data.version, 1, 32) &&
+             isValidString(data.axis, 1, 64) &&
+             data.avgTokens is number && data.avgTokens >= 0 &&
+             data.hitRate is number && data.hitRate >= 0 && data.hitRate <= 1 &&
+             data.passedCount is int && data.passedCount >= 0 &&
+             data.totalCount is int && data.totalCount >= 1 &&
+             data.passedCount <= data.totalCount &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidBenchmarkSnapshot(data) {
+      let allowedFields = [
+        'ownerUid',
+        'version',
+        'nodeCount',
+        'recall',
+        'latencyMs',
+        'createdAt'
+      ];
+      return hasRequiredFields(data, allowedFields) &&
+             hasOnlyAllowedFields(data, allowedFields) &&
+             isValidString(data.ownerUid, 1, 128) &&
+             isValidString(data.version, 1, 32) &&
+             data.nodeCount is int && data.nodeCount >= 0 &&
+             data.recall is number && data.recall >= 0 && data.recall <= 1 &&
+             data.latencyMs is number && data.latencyMs >= 0 &&
+             data.createdAt is timestamp;
+    }
+
+    // ===============================================================
+    // Collection Rules
+    // ===============================================================
+
+    match /eval_runs/{runId} {
+      allow read: if isDocOwner();
+      allow create: if isAuthenticated() &&
+                       uidUnchanged() &&
+                       request.resource.data.createdAt == request.time &&
+                       isValidEvalRun(request.resource.data);
+      allow update: if isDocOwner() &&
+                       uidNotModified() &&
+                       areImmutableFieldsUnchanged(['ownerUid', 'createdAt']) &&
+                       isValidEvalRun(request.resource.data);
+      allow delete: if isDocOwner();
+    }
+
+    match /benchmark_snapshots/{snapId} {
+      allow read: if isDocOwner();
+      allow create: if isAuthenticated() &&
+                       uidUnchanged() &&
+                       request.resource.data.createdAt == request.time &&
+                       isValidBenchmarkSnapshot(request.resource.data);
+      allow update: if isDocOwner() &&
+                       uidNotModified() &&
+                       areImmutableFieldsUnchanged(['ownerUid', 'createdAt']) &&
+                       isValidBenchmarkSnapshot(request.resource.data);
+      allow delete: if isDocOwner();
+    }
+
+    // ===============================================================
+    // Default Deny Catch-All
+    // ===============================================================
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

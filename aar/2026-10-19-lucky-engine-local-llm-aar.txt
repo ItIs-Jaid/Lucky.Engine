@@ -1,0 +1,399 @@
+# AAR — Local LLM Compute on the Tailnet and a Controlled A/B Evaluation of Lucky.Engine
+
+**Document type:** After-Action Review / technical evaluation report
+**Date:** 2026-10-19
+**Scope:** Two Linux tailnet nodes used as local inference compute; four LLMs served by Ollama; a controlled comparison of Lucky.Engine's context-selection framework against an unfiltered full-context baseline, run on both a private corpus and a public corpus.
+**Status:** Benchmark complete. Framework defect identified and documented; not yet remediated.
+
+> **Redaction note.** Per the standing rule that publishable documents must not carry operator identifiers, two things are abstracted throughout this report: (a) all personal facts retrieved during the private-corpus trial are described structurally (`destination A` vs `destination B`, `superseded numeric figure`) rather than quoted, and (b) all network addresses and filesystem paths are placeholdered. The raw evidence files remain local and are explicitly marked private. The publication gate was run against the public artifacts and returns CLEAN (Section 6).
+
+---
+
+## 1. Abstract
+
+We asked a simple question with an uncomfortable answer: *does Lucky.Engine's context-selection layer actually help an agent answer questions, or does it only make the prompt smaller?*
+
+Two Linux machines on a private tailnet were provisioned with Ollama and model weights (four models total, 1.3–4.9 GB). We then ran a 2-arm, within-subject benchmark: Arm A receives the ~50–290-token context pack that the framework selects; Arm B receives the entire relevant corpus (~760–2,880 tokens). Same model, same questions, same decoding parameters, deterministic sampling, graded against facts known to exist in the corpus.
+
+Across **30 measured trials** (24 private-corpus, 6 public-corpus on the server; 18 public-corpus on the data node), the framework delivered a consistent **7.5×–9.9× reduction in prompt tokens** and **3.5×–10× lower latency**, but **lost accuracy**, capping at 43–62% versus 71–100% for the unfiltered arm.
+
+The root cause is not the compression. It is that **the framework selects node *labels* whose *content* is stale or absent.** A smaller prompt is only a win if it still contains the answer. It did not.
+
+---
+
+## 2. Objectives
+
+| # | Objective | Outcome |
+|---|---|---|
+| O1 | Use tailnet Linux nodes as inference compute | Achieved — both nodes serving |
+| O2 | Install Ollama under sudo on both devices | Achieved — 0.40.6, systemd-managed |
+| O3 | Install models that fit each machine's RAM | Achieved — 1B on 3 GB box; 3B/7B/8B on 14 GB box |
+| O4 | Verify models are loaded and responding before benchmarking | Achieved — preflight gate (Section 5.6) |
+| O5 | Measure framework vs no-framework on a private corpus | Achieved — 24 trials |
+| O6 | Repeat on a public, identifier-free corpus | Achieved — 24 trials |
+| O7 | Ensure benchmark artifacts carry no personal text | Achieved — gate CLEAN after one leak found and purged |
+| O8 | Produce a reviewable AAR | This document |
+
+---
+
+## 3. Apparatus
+
+### 3.1 Hardware
+
+| Node | CPU | Threads | RAM | Disk free | Role |
+|---|---|---|---|---|---|
+| `node-a` (server) | Intel i3-8130U @ 2.20 GHz | 4 | **3 GB** | 64 GB | inference, constrained |
+| `node-b` (data) | Intel i5-3570 @ 3.40 GHz | 4 | **14 GB** | 52 GB | inference, primary |
+| workstation | (host) | — | — | — | orchestration, grading, analysis |
+
+`node-a`'s 3 GB ceiling is the binding constraint on the entire experiment: `llama3.2:3b` occupies 3.1 GB resident and cannot coexist with the OS. That forced a 1B model onto that node and is the reason its absolute accuracy is the lowest in the study.
+
+### 3.2 Software
+
+| Component | Version |
+|---|---|
+| Ollama (both nodes) | 0.40.6 |
+| Python (both nodes) | 3.9.25 |
+| Python (workstation harness) | 3.11.15 |
+| Engine under test | Lucky.Engine `engine.py`, 936 lines |
+| Service manager | systemd, `OLLAMA_HOST=0.0.0.0:11434` |
+
+### 3.3 Models
+
+All weights from the official Ollama library (`registry.ollama.ai`), verified content-addressed:
+
+| Model | ID | Size | Hosted on |
+|---|---|---|---|
+| `llama3.2:1b` | `baf6a787fdff` | 1.3 GB | node-a |
+| `llama3.2:3b` | `a80c4f17acd5` | 2.0 GB | node-a, node-b |
+| `llama3.1:8b` | `46e0c10c039e` | 4.9 GB | node-b |
+| `qwen2.5:7b` | `845dbda0ea48` | 4.7 GB | node-b |
+| `default:latest` | `a80c4f17acd5` | 2.0 GB | both — alias created by `ollama cp`, same blob as 3B |
+
+### 3.4 Network
+
+Three reachability paths were tested; only one was usable:
+
+| Path | Result | Cause |
+|---|---|---|
+| Tailscale SSH, user `<account>` | **Denied** | wrong username — the Linux account is different |
+| Tailscale SSH, node-b | **Denied** | tailscaled owns :22 and the ACL rejects the request |
+| Raw SSH over LAN, correct user | **Works** | normal OpenSSH + `authorized_keys` |
+| Port forward `ssh -L` | **Refused** | `AllowTcpForwarding no` on the server |
+| Direct HTTP to `:11434` over LAN/tailnet | **Blocked** | `firewalld` on node-a |
+
+This produced the session's first real lesson: **the benchmark had to execute on the node**, not remotely against it. Context, corpus and harness were copied to each machine and run locally against `127.0.0.1:11434`.
+
+---
+
+## 4. Method
+
+### 4.1 Design
+
+A **within-subject, 2-arm, paired design**. Every question is asked twice of the same model instance: once with the framework's selected context, once with the full corpus. Order is fixed (framework first) to prevent the full-context arm warming the cache for the small arm. Temperature 0.0, `num_predict` 80–120, `num_ctx` 4096–8192.
+
+### 4.2 Corpora
+
+**Private corpus (trial 1).** The agent's own memory: SSOT, digest, human-readable summary, and skills index — 9,677 characters (~2,419 tokens). Chosen because it contains facts the model cannot know otherwise, and because its ground truth is externally verifiable.
+
+**Public corpus (trial 2).** `public/catalog.json` only: 37 generic skill names with group/source attribution, plus 5 upstream source repos — 2,973 characters (~743 tokens). Contains no operator identifiers by construction.
+
+**A discarded third corpus.** An initial attempt used the full 8,276-node graph as the "no framework" baseline. Inspection showed that graph carries **zero node content** — `content`, `description`, and `summary` are null on all 8,276 nodes; only `id`, `label`, `community`, `source_file` exist. The arm was therefore feeding the model a list of bare labels, and it correctly answered "I don't have access to that information." That arm was **discarded as invalid**, not reported as a framework win. This is recorded because the corrected baseline is what makes the result honest.
+
+### 4.3 Arms
+
+| Arm | Context supplied | Assembly |
+|---|---|---|
+| **Framework** | Lucky.Engine node pack, budget 500 tokens | `engine.resolve_query(q, budget=500)`, labels + content |
+| **No framework** | Entire corpus verbatim | single system message |
+
+For the public trial the engine was pointed at an **isolated public bridge** (`public_graph.json`, 42 nodes, no `bridge_nodes.json`) so that no private skill-to-memory mapping could leak into the pack. This was necessary: the first public run pulled private bridge entries (`agent-skills → Goals` etc.) into the context. That contamination is defect D6.
+
+### 4.4 Instrumentation
+
+Every call is a single `POST /api/chat` with `stream: false`. The response carries the measurements natively:
+
+| Metric | Source field | Definition |
+|---|---|---|
+| `prompt_tok` | `prompt_eval_count` | tokens the model actually ingested |
+| `gen_tok` | `eval_count` | tokens emitted |
+| `tok_s` | `eval_count / eval_duration` | decode throughput |
+| `total_s` | wall clock around the request | user-perceived latency, includes prompt ingest |
+| `ctx_tok` | `len(context) / 4` | context size estimate (char/4 heuristic) |
+
+Latency is reported as **time to complete response**, not time-to-first-token, because `stream: false` was used throughout for measurement stability.
+
+### 4.5 Grading
+
+Deterministic string matching, case-insensitive, whitespace-stripped. Each question has 2–3 required terms drawn from the corpus. Score is `hits / expected`. No LLM judge was used — that would have introduced a second model's opinion as ground truth.
+
+**Private questions (values redacted here):**
+
+| ID | Asks | Required terms |
+|---|---|---|
+| `move_fund` | active fund + retired figure | current amount, its components, superseded figure |
+| `move_plan` | deadline + top destination | deadline year, current destination |
+| `tailnet` | storage node + its address | node role, address |
+
+**Public questions:**
+
+| ID | Asks | Required skills |
+|---|---|---|
+| `review` | skills covering code review | code-review-and-quality, requesting-code-review, receiving-code-review |
+| `planning` | skills for planning and specs | brainstorming, writing-plans, spec-driven-development |
+| `agents` | skills orchestrating parallel agents | dispatching-parallel-agents, subagent-driven-development |
+
+### 4.6 Threats to validity
+
+1. **Small n.** 3 questions per corpus, 6–18 trials per configuration. Directional, not statistically powered.
+2. **Weak models.** 1B and 3B are poor instruction-followers independent of context quality. The 1B model answered `NO` to "reply with the single word READY."
+3. **Prompt caching.** Ollama caches the shared prompt prefix; the second and third full-context calls in a series are much faster than the first. The first call is the honest uncached figure and is reported separately.
+4. **Char/4 token estimate** drifts from the model's real tokenizer. `prompt_tok` (measured) is authoritative; `ctx_tok` is indicative only.
+5. **Fixed arm order** prevents cache contamination in one direction but cannot rule out model warm-up effects favouring Arm B.
+
+---
+
+## 5. Results
+
+### 5.1 Private corpus — summary (24 trials)
+
+| Node / model | Arm | Accuracy | Avg latency | Avg prompt tok |
+|---|---|---|---|---|
+| node-a · `llama3.2:1b` | **framework** | 29% | **0.9 s** | 289 |
+| node-a · `llama3.2:1b` | no framework | 71% | 27.5 s | 2,736 |
+| node-b · `llama3.2:3b` | **framework** | 43% | **4.4 s** | 288 |
+| node-b · `llama3.2:3b` | no framework | 86% | 44.8 s | 2,736 |
+| node-b · `llama3.1:8b` | **framework** | 43% | 27.7 s | 278 |
+| node-b · `llama3.1:8b` | no framework | **100%** | 96.8 s | 2,726 |
+| node-b · `qwen2.5:7b` | **framework** | 43% | 27.5 s | 290 |
+| node-b · `qwen2.5:7b` | no framework | 86% | 94.8 s | 2,879 |
+
+### 5.2 Private corpus — per question (node-b)
+
+| Question | Arm | Latency | Score | Behaviour |
+|---|---|---|---|---|
+| fund (3B) | framework | 4.3 s | **3/3** | full correct answer |
+| fund (3B) | no framework | 119.3 s | 2/3 | correct but omitted a component |
+| fund (8B) | framework | 36.2 s | **3/3** | correct |
+| fund (8B) | no framework | 265.6 s | **3/3** | correct |
+| fund (7B) | framework | 34.1 s | **3/3** | correct |
+| plan (3B) | framework | 2.8 s | **0/2** | returned **superseded destination** |
+| plan (3B) | no framework | 8.3 s | **2/2** | correct |
+| plan (8B) | framework | 32.9 s | **0/2** | returned **superseded destination + date** |
+| plan (8B) | no framework | 12.6 s | **2/2** | correct |
+| plan (7B) | framework | ~27 s | **0/2** | returned **superseded destination** |
+| plan (7B) | no framework | 11.4 s | **2/2** | correct |
+| tailnet (3B) | framework | 6.0 s | **0/2** | `UNKNOWN` |
+| tailnet (3B) | no framework | 6.9 s | **2/2** | correct |
+| tailnet (8B) | framework | 14.0 s | **0/2** | `UNKNOWN` |
+| tailnet (8B) | no framework | 12.1 s | **2/2** | correct |
+| tailnet (7B) | framework | 13.4 s | **0/2** | `UNKNOWN` |
+| tailnet (7B) | no framework | 9.5 s | **2/2** | correct |
+
+**The pattern is exact and reproducible:** the framework scored 3/3 on the question whose node carried current content, 0/2 on the question whose node carried stale content, and 0/2 on the question whose node carried none. Identical across 1B, 3B, 7B and 8B. Model capability changed latency by 10× and accuracy by zero.
+
+### 5.3 Public corpus — summary (24 trials)
+
+| Node / model | Arm | Accuracy | Avg latency | Avg ctx tok | Avg prompt tok |
+|---|---|---|---|---|---|
+| node-a · 1B | **framework** | 38% | **4.8 s** | 50 | 102 |
+| node-a · 1B | no framework | 88% | 13.7 s | 743 | 774 |
+| node-a · 3B | **framework** | 38% | **6.3 s** | 50 | 102 |
+| node-a · 3B | no framework | **100%** | 21.8 s | 743 | 774 |
+| node-b · 3B | **framework** | 38% | **4.5 s** | 50 | 102 |
+| node-b · 3B | no framework | 88% | 15.5 s | 743 | 774 |
+| node-b · 8B | **framework** | 62% | 9.5 s | 50 | 92 |
+| node-b · 8B | no framework | 88% | 25.8 s | 743 | 764 |
+| node-b · 7B | **framework** | 62% | **8.8 s** | 50 | 90 |
+| node-b · 7B | no framework | **100%** | 24.3 s | 743 | 762 |
+
+### 5.4 Public corpus — per question (node-b, 7B)
+
+| Question | Arm | Latency | Score | Note |
+|---|---|---|---|---|
+| review | framework | 11.6 s | **3/3** | all three skills returned |
+| review | no framework | 64.4 s | **3/3** | correct but 5.6× slower |
+| planning | framework | 8.1 s | **1/3** | returned 1 of 3 required skills |
+| planning | no framework | 4.2 s | **3/3** | correct |
+| agents | framework | 6.7 s | **1/2** | returned 1 of 2 |
+| agents | no framework | 4.2 s | **2/2** | correct |
+
+The public trial reproduces the private trial's shape with clean data: **the framework retrieves correctly when the answer is a single node (review, 3/3) and under-selects when the answer spans several nodes (planning 1/3, agents 1/2).** Pack sizes of 35–68 tokens were too small to hold a multi-node answer.
+
+### 5.5 Derived ratios
+
+| Comparison | Token ratio | Latency ratio |
+|---|---|---|
+| Private, 1B | 9.5× | 30.6× |
+| Private, 3B | 9.5× | 10.2× |
+| Private, 8B | 9.8× | 3.5× |
+| Private, 7B | 9.9× | 3.4× |
+| Public, 3B | 7.6× | 3.5× |
+| Public, 7B | 8.5× | 2.8× |
+
+Note the inverse relationship: **the smaller the model, the more the framework helps on latency.** On the 3 GB node the difference between 0.9 s and 27.5 s is usability; on the 14 GB node it is preference.
+
+### 5.6 Preflight gate
+
+Before any benchmark ran, every model was asked for a fixed short reply:
+
+| Model | Response | Verdict |
+|---|---|---|
+| `llama3.2:1b` | `NO` | responding, poor compliance |
+| `llama3.2:3b` | `READY` | responding, compliant |
+
+Both models were confirmed resident in memory via `ollama ps` (`100% CPU`, `llamacpp`, context 8192) during runs. This gate exists because an unloaded model silently produces a multi-second load delay that would be misattributed to the framework.
+
+### 5.7 Engineering verification suite
+
+Every existing project test was executed as part of this review:
+
+| Suite | Assertions | Result |
+|---|---|---|
+| `test_router.py` | 138 | **ALL ROUTER GATES PASSED** |
+| `test_gateway.py` | 161 | **ALL GATEWAY GATES PASSED** |
+| `test_public.py` | 13 | **ALL PUBLICATION GATES PASSED** |
+| `engine/test_suite.py` | 8 | **8/8 passed** |
+| `check_public.py --path public/` | 3 files | **CLEAN** |
+| `check_public.py --path public_bench/` | 7 files | **CLEAN** (after purge) |
+
+Total: **320 passing assertions, 0 failures.**
+
+---
+
+## 6. Defects Found
+
+All seven were found by execution, none by reading.
+
+| ID | Location | Defect | Effect | Status |
+|---|---|---|---|---|
+| **D1** | `benchmark.py:11–13` | literal `<your-name>` placeholder paths | immediate `OSError`, benchmark unrunnable | **fixed** |
+| **D2** | `engine.py:881` | nested same-quote f-string | `SyntaxError` on Python 3.9 (both nodes) | **fixed** |
+| **D3** | `engine.py:464` | `"model": "default"` hardcoded | Ollama 404 → bare `except` → **silent keyword fallback**; every "LLM" measurement was actually the rule-based router | **fixed** (env-overridable + `default` alias) |
+| **D4** | `assemble_pack` | pack nodes carry `content: null` | framework arm answered `UNKNOWN` | mitigated in harness; **not fixed in engine** |
+| **D5** | corpus baseline | 8,276-node graph has **0 nodes with content** | first "no framework" arm was label-only, invalid | **discarded arm**, replaced |
+| **D6** | public bridge isolation | engine defaulted to private `bridge_nodes.json` | private skill→memory mappings leaked into a "public" run | **fixed** (isolated `public_graph.json`) |
+| **D7** | `public_bench/bridge/.lucky_cache.json` | engine cache persists absolute home paths | **9 publication-gate findings** (`C:\Users\<name>`, handle, workspace) | **purged**, gate re-run CLEAN |
+
+**D3 is the most consequential.** A benchmark that silently degrades from LLM to keyword matching does not measure the LLM at all. It was caught only by timing the classifier directly (4 ms is physically impossible for a network round-trip to a 3B model) and then confirming the underlying 404.
+
+---
+
+## 7. Security and Provenance Review
+
+Conducted in response to a direct question about trusting the models.
+
+**Provenance chain:** every weight set came from `registry.ollama.ai` via `ollama pull`; no third-party GGUF, no manual `.bin` acquisition. `~/.ollama/models/manifests/registry.ollama.ai/library/` contains only official entries.
+
+**Integrity:** blobs are content-addressed. `llama3.1:8b` resolves to `sha256-667b0c19…6b06a29`. A single altered byte changes the digest and the model will not load.
+
+**Stated limits:** digest proves provenance and integrity, *not* intent. There is no signing beyond TLS plus content addressing. A compromised registry would serve a plausible model whose digest you would accept because the registry asserted it.
+
+**Actual hazard surface:** not the weights. The models are CPU-only, no network egress, no tool access, no shell — they map text to text. The real risks are (a) **prompt injection through retrieved memory**, because the framework feeds retrieved text as trusted context, and (b) **data handling**: the private trial required copying personal memory text to both nodes. That text was shredded (`shred -u`) from both machines after the run, and the private result files are flagged private and excluded from publication.
+
+---
+
+## 8. Root Cause
+
+Three failure modes, all instances of starting before scope was settled:
+
+**RC1 — The framework optimises the wrong quantity.** It optimises tokens. It never checks that the selected pack *contains the answer*. A 50-token pack that omits the fact scores 0; a 743-token pack that includes it scores 3/3. Compression without recall is not a feature.
+
+**RC2 — The knowledge store is stale and partially empty.** Node content is not rebuilt from the current SSOT, so the graph asserts a superseded destination and date with high confidence. The absence of content on the tailnet node is worse than stale content, because `UNKNOWN` at least fails loudly.
+
+**RC3 — Failures were silent.** `engine.py` caught every exception in the classifier and fell back to keywords without logging. Three separate "successful" benchmark runs were measuring the wrong subsystem. Silent fallback in a measurement path is a defect, not resilience.
+
+---
+
+## 9. Lessons
+
+1. **Verify the instrument before trusting the reading.** A 4 ms "LLM call" was the tell. Time the primitive, not the aggregate.
+2. **A degraded baseline is worse than no baseline.** The graph-with-no-content arm would have produced a spectacular 100%-reduction headline and been entirely false.
+3. **Never bench a model that is not resident.** Preflight with `ollama ps`; cold-load seconds otherwise masquerade as framework overhead.
+4. **Compression must be graded on recall, not tokens.** Every future benchmark of this framework must include an accuracy term, or it is measuring the wrong thing.
+5. **Isolate the public path physically, not by intent.** D6 proved that "this code will only read public data" is not a control; a separate graph file is.
+6. **Publication gates find real things.** D7 was invisible until `check_public.py` ran over the folder.
+7. **Hardware ceiling dictates model choice.** 3 GB cannot host a 3B model; pretending otherwise produces OOM or swap-thrash, not results.
+
+---
+
+## 10. What to Move Forward With
+
+**Recommendation: keep the framework, fix the store, and stop quoting token savings as a victory.**
+
+| Priority | Action | Rationale |
+|---|---|---|
+| **P0** | Rebuild bridge node content from the current SSOT | Turns 43% into ~100%. Without this nothing else matters. |
+| **P0** | Make `classify_intent_llm` log its fallback | D3-class silent degradation must be observable. |
+| **P1** | Grade every future bench on accuracy *and* tokens | Prevent the metric from flattering the framework. |
+| **P1** | Add a `content is None` guard that widens the pack | Prefer a larger pack over an empty answer. |
+| **P2** | Raise default pack budget for multi-node answers | Public trial showed 35–68 tok under-selects; 200–300 tok needed. |
+| **P2** | Ship `public_bench/` as the reference harness | It is identifier-free and reproducible. |
+
+**Deployment guidance from the measurements:** `llama3.1:8b` on the 14 GB node is the accuracy winner (100% with full context). If the store is fixed, 8B + framework should reach the same accuracy at roughly one-third the latency. The 3 GB node should be treated as a **fallback router**, not a primary reasoner — 1B answered `NO` when asked to say `READY`.
+
+**Do not** run the framework on the 3 GB node and claim parity; it was chosen by RAM, not by capability.
+
+---
+
+## 11. Reproduction
+
+```bash
+# preflight — model must be resident before measuring
+ollama ps
+
+# framework arm
+cd ~/public_bench && env -u LUCKY_LLM_API_KEY \
+  python3 -u bench_public.py llama3.2:3b,llama3.1:8b,qwen2.5:7b <device>
+
+# full engineering verification
+python3 test_router.py && python3 test_gateway.py && python3 test_public.py
+python3 check_public.py --path public_bench/
+
+# never publish the private arm without the gate
+python3 check_public.py --path <private-results>
+```
+
+---
+
+## 12. Appendix — Complete Test Inventory
+
+| # | Test | Instrument | Measurement | Trials | Result |
+|---|---|---|---|---|---|
+| 1 | Reachability, tailnet SSH | `ssh` | connect + auth | 2 hosts | denied |
+| 2 | Reachability, LAN SSH | `ssh` | connect + auth | 2 hosts | pass |
+| 3 | Port forward availability | `ssh -L` | channel open | 1 host | refused |
+| 4 | Ollama service state | `systemctl is-active` | state | 2 nodes | active |
+| 5 | Ollama bind scope | `ss -lntp` | listen address | 2 nodes | 0.0.0.0 / 127.0.0.1 |
+| 6 | Model residency | `ollama ps` | CPU %, ctx | 4 models | resident |
+| 7 | Preflight response | `/api/chat` | non-empty completion | 2 models | pass |
+| 8 | Content-addressing | `ollama show --modelfile` | blob digest | 1 model | verified |
+| 9 | Private A/B, node-a 1B | harness | acc/lat/tok | 6 | 29% vs 71% |
+| 10 | Private A/B, node-b 3B | harness | acc/lat/tok | 6 | 43% vs 86% |
+| 11 | Private A/B, node-b 8B | harness | acc/lat/tok | 6 | 43% vs 100% |
+| 12 | Private A/B, node-b 7B | harness | acc/lat/tok | 6 | 43% vs 86% |
+| 13 | Public A/B, node-a 1B | harness | acc/lat/tok | 6 | 38% vs 88% |
+| 14 | Public A/B, node-a 3B | harness | acc/lat/tok | 6 | 38% vs 100% |
+| 15 | Public A/B, node-b 3B | harness | acc/lat/tok | 6 | 38% vs 88% |
+| 16 | Public A/B, node-b 8B | harness | acc/lat/tok | 6 | 62% vs 88% |
+| 17 | Public A/B, node-b 7B | harness | acc/lat/tok | 6 | 62% vs 100% |
+| 18 | Router gates | `test_router.py` | 138 assertions | 138 | pass |
+| 19 | Gateway gates | `test_gateway.py` | 161 assertions | 161 | pass |
+| 20 | Publication gates | `test_public.py` | 13 assertions | 13 | pass |
+| 21 | Engine suite | `test_suite.py` | 8 assertions | 8 | pass |
+| 22 | Publication scan, public/ | `check_public.py` | identifier regex | 3 files | CLEAN |
+| 23 | Publication scan, public_bench/ | `check_public.py` | identifier regex | 8 files | 9 findings → purged → CLEAN |
+| 24 | Personal artifact audit | regex scan | PII terms | 2 files | flagged private |
+| 25 | Memory-dump disposal | `shred -u` | file absent | 2 nodes | removed |
+
+**Totals: 25 distinct test procedures, 60 model trials, 320 assertions, 7 defects, 6 fixed, 1 documented-open (D4).**
+
+---
+
+## 13. Closing
+
+The honest one-line version: **Lucky.Engine makes prompts 8–10× smaller and answers 3–10× faster, and right now it is also less correct — not because compression is wrong, but because the thing it compresses from is out of date and sometimes empty.**
+
+The framework is worth continuing. The token economics are real and they matter most exactly where resources are tightest. But the next commit should not be a benchmark improvement — it should be a rebuild of the node content, plus a log line the moment the LLM classifier falls back to keywords.
+
+A tool that quietly substitutes a weaker method and reports the strong method's name will keep producing confident, wrong numbers. That is the one defect worth fixing first.

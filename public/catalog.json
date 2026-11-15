@@ -1,0 +1,255 @@
+{
+  "version": "1.5.0",
+  "purpose": "Public-safe skill inventory. Generic names only; no operator identifiers.",
+  "sources": [
+    {
+      "id": "anthropics",
+      "repo": "https://github.com/anthropics/skills",
+      "what": "Official Agent Skills reference set"
+    },
+    {
+      "id": "superpowers",
+      "repo": "https://github.com/obra/superpowers",
+      "what": "Agentic skills framework for software development"
+    },
+    {
+      "id": "addyosmani",
+      "repo": "https://github.com/addyosmani/agent-skills",
+      "what": "Production-grade engineering skills"
+    },
+    {
+      "id": "composio",
+      "repo": "https://github.com/ComposioHQ/awesome-claude-skills",
+      "what": "Curated index of community skills"
+    },
+    {
+      "id": "voltagent",
+      "repo": "https://github.com/VoltAgent/awesome-agent-skills",
+      "what": "Large curated index of agent skills"
+    }
+  ],
+  "skills": [
+    {
+      "name": "brainstorming",
+      "group": "planning",
+      "source": "superpowers",
+      "local": true
+    },
+    {
+      "name": "writing-plans",
+      "group": "planning",
+      "source": "superpowers",
+      "local": true
+    },
+    {
+      "name": "executing-plans",
+      "group": "planning",
+      "source": "superpowers",
+      "local": true
+    },
+    {
+      "name": "spec-driven-development",
+      "group": "planning",
+      "source": "addyosmani",
+      "local": true
+    },
+    {
+      "name": "context-engineering",
+      "group": "planning",
+      "source": "addyosmani",
+      "local": false
+    },
+    {
+      "name": "test-driven-development",
+      "group": "build",
+      "source": "superpowers",
+      "local": true
+    },
+    {
+      "name": "incremental-implementation",
+      "group": "build",
+      "source": "addyosmani",
+      "local": true
+    },
+    {
+      "name": "systematic-debugging",
+      "group": "build",
+      "source": "superpowers",
+      "local": true
+    },
+    {
+      "name": "verification-before-completion",
+      "group": "build",
+      "source": "superpowers",
+      "local": true
+    },
+    {
+      "name": "code-review-and-quality",
+      "group": "review",
+      "source": "addyosmani",
+      "local": true
+    },
+    {
+      "name": "requesting-code-review",
+      "group": "review",
+      "source": "superpowers",
+      "local": true
+    },
+    {
+      "name": "receiving-code-review",
+      "group": "review",
+      "source": "superpowers",
+      "local": true
+    },
+    {
+      "name": "using-git-worktrees",
+      "group": "vcs",
+      "source": "superpowers",
+      "local": true
+    },
+    {
+      "name": "finishing-a-development-branch",
+      "group": "vcs",
+      "source": "superpowers",
+      "local": true
+    },
+    {
+      "name": "dispatching-parallel-agents",
+      "group": "orchestration",
+      "source": "superpowers",
+      "local": true
+    },
+    {
+      "name": "subagent-driven-development",
+      "group": "orchestration",
+      "source": "superpowers",
+      "local": true
+    },
+    {
+      "name": "documentation-and-adrs",
+      "group": "docs",
+      "source": "addyosmani",
+      "local": true
+    },
+    {
+      "name": "writing-skills",
+      "group": "meta",
+      "source": "superpowers",
+      "local": true
+    },
+    {
+      "name": "using-superpowers",
+      "group": "meta",
+      "source": "superpowers",
+      "local": true
+    },
+    {
+      "name": "skill-creator",
+      "group": "meta",
+      "source": "anthropics",
+      "local": false
+    },
+    {
+      "name": "mcp-builder",
+      "group": "meta",
+      "source": "anthropics",
+      "local": false
+    },
+    {
+      "name": "webapp-testing",
+      "group": "quality",
+      "source": "anthropics",
+      "local": false
+    },
+    {
+      "name": "artifacts-builder",
+      "group": "frontend",
+      "source": "anthropics",
+      "local": false
+    },
+    {
+      "name": "canvas-design",
+      "group": "design",
+      "source": "anthropics",
+      "local": false
+    },
+    {
+      "name": "docx",
+      "group": "documents",
+      "source": "anthropics",
+      "local": true
+    },
+    {
+      "name": "pdf",
+      "group": "documents",
+      "source": "anthropics",
+      "local": true
+    },
+    {
+      "name": "pptx",
+      "group": "documents",
+      "source": "anthropics",
+      "local": true
+    },
+    {
+      "name": "xlsx",
+      "group": "documents",
+      "source": "anthropics",
+      "local": true
+    },
+    {
+      "name": "context-router-maintenance",
+      "group": "agent-infra",
+      "source": "local",
+      "local": true
+    },
+    {
+      "name": "memory-knowledge-graph",
+      "group": "agent-infra",
+      "source": "local",
+      "local": true
+    },
+    {
+      "name": "codebase-graph",
+      "group": "agent-infra",
+      "source": "local",
+      "local": true
+    },
+    {
+      "name": "relocation-planning",
+      "group": "life-ops",
+      "source": "local",
+      "local": true
+    },
+    {
+      "name": "relocation-logistics",
+      "group": "life-ops",
+      "source": "local",
+      "local": true
+    },
+    {
+      "name": "rental-listing-verification",
+      "group": "life-ops",
+      "source": "local",
+      "local": true
+    },
+    {
+      "name": "host-security-monitoring",
+      "group": "security",
+      "source": "local",
+      "local": true
+    },
+    {
+      "name": "identity-monitoring",
+      "group": "security",
+      "source": "local",
+      "local": true
+    },
+    {
+      "name": "ecommerce-launch",
+      "group": "product",
+      "source": "local",
+      "local": true
+    }
+  ]
+}

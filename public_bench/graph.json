@@ -1,0 +1,299 @@
+{
+ "nodes": [
+  {
+   "id": "skill_brainstorming",
+   "label": "brainstorming",
+   "type": "skill",
+   "content": "group=planning; source=superpowers; local=True",
+   "norm_label": "brainstorming"
+  },
+  {
+   "id": "skill_writing_plans",
+   "label": "writing-plans",
+   "type": "skill",
+   "content": "group=planning; source=superpowers; local=True",
+   "norm_label": "writing-plans"
+  },
+  {
+   "id": "skill_executing_plans",
+   "label": "executing-plans",
+   "type": "skill",
+   "content": "group=planning; source=superpowers; local=True",
+   "norm_label": "executing-plans"
+  },
+  {
+   "id": "skill_spec_driven_development",
+   "label": "spec-driven-development",
+   "type": "skill",
+   "content": "group=planning; source=addyosmani; local=True",
+   "norm_label": "spec-driven-development"
+  },
+  {
+   "id": "skill_context_engineering",
+   "label": "context-engineering",
+   "type": "skill",
+   "content": "group=planning; source=addyosmani; local=False",
+   "norm_label": "context-engineering"
+  },
+  {
+   "id": "skill_test_driven_development",
+   "label": "test-driven-development",
+   "type": "skill",
+   "content": "group=build; source=superpowers; local=True",
+   "norm_label": "test-driven-development"
+  },
+  {
+   "id": "skill_incremental_implementation",
+   "label": "incremental-implementation",
+   "type": "skill",
+   "content": "group=build; source=addyosmani; local=True",
+   "norm_label": "incremental-implementation"
+  },
+  {
+   "id": "skill_systematic_debugging",
+   "label": "systematic-debugging",
+   "type": "skill",
+   "content": "group=build; source=superpowers; local=True",
+   "norm_label": "systematic-debugging"
+  },
+  {
+   "id": "skill_verification_before_completion",
+   "label": "verification-before-completion",
+   "type": "skill",
+   "content": "group=build; source=superpowers; local=True",
+   "norm_label": "verification-before-completion"
+  },
+  {
+   "id": "skill_code_review_and_quality",
+   "label": "code-review-and-quality",
+   "type": "skill",
+   "content": "group=review; source=addyosmani; local=True",
+   "norm_label": "code-review-and-quality"
+  },
+  {
+   "id": "skill_requesting_code_review",
+   "label": "requesting-code-review",
+   "type": "skill",
+   "content": "group=review; source=superpowers; local=True",
+   "norm_label": "requesting-code-review"
+  },
+  {
+   "id": "skill_receiving_code_review",
+   "label": "receiving-code-review",
+   "type": "skill",
+   "content": "group=review; source=superpowers; local=True",
+   "norm_label": "receiving-code-review"
+  },
+  {
+   "id": "skill_using_git_worktrees",
+   "label": "using-git-worktrees",
+   "type": "skill",
+   "content": "group=vcs; source=superpowers; local=True",
+   "norm_label": "using-git-worktrees"
+  },
+  {
+   "id": "skill_finishing_a_development_branch",
+   "label": "finishing-a-development-branch",
+   "type": "skill",
+   "content": "group=vcs; source=superpowers; local=True",
+   "norm_label": "finishing-a-development-branch"
+  },
+  {
+   "id": "skill_dispatching_parallel_agents",
+   "label": "dispatching-parallel-agents",
+   "type": "skill",
+   "content": "group=orchestration; source=superpowers; local=True",
+   "norm_label": "dispatching-parallel-agents"
+  },
+  {
+   "id": "skill_subagent_driven_development",
+   "label": "subagent-driven-development",
+   "type": "skill",
+   "content": "group=orchestration; source=superpowers; local=True",
+   "norm_label": "subagent-driven-development"
+  },
+  {
+   "id": "skill_documentation_and_adrs",
+   "label": "documentation-and-adrs",
+   "type": "skill",
+   "content": "group=docs; source=addyosmani; local=True",
+   "norm_label": "documentation-and-adrs"
+  },
+  {
+   "id": "skill_writing_skills",
+   "label": "writing-skills",
+   "type": "skill",
+   "content": "group=meta; source=superpowers; local=True",
+   "norm_label": "writing-skills"
+  },
+  {
+   "id": "skill_using_superpowers",
+   "label": "using-superpowers",
+   "type": "skill",
+   "content": "group=meta; source=superpowers; local=True",
+   "norm_label": "using-superpowers"
+  },
+  {
+   "id": "skill_skill_creator",
+   "label": "skill-creator",
+   "type": "skill",
+   "content": "group=meta; source=anthropics; local=False",
+   "norm_label": "skill-creator"
+  },
+  {
+   "id": "skill_mcp_builder",
+   "label": "mcp-builder",
+   "type": "skill",
+   "content": "group=meta; source=anthropics; local=False",
+   "norm_label": "mcp-builder"
+  },
+  {
+   "id": "skill_webapp_testing",
+   "label": "webapp-testing",
+   "type": "skill",
+   "content": "group=quality; source=anthropics; local=False",
+   "norm_label": "webapp-testing"
+  },
+  {
+   "id": "skill_artifacts_builder",
+   "label": "artifacts-builder",
+   "type": "skill",
+   "content": "group=frontend; source=anthropics; local=False",
+   "norm_label": "artifacts-builder"
+  },
+  {
+   "id": "skill_canvas_design",
+   "label": "canvas-design",
+   "type": "skill",
+   "content": "group=design; source=anthropics; local=False",
+   "norm_label": "canvas-design"
+  },
+  {
+   "id": "skill_docx",
+   "label": "docx",
+   "type": "skill",
+   "content": "group=documents; source=anthropics; local=True",
+   "norm_label": "docx"
+  },
+  {
+   "id": "skill_pdf",
+   "label": "pdf",
+   "type": "skill",
+   "content": "group=documents; source=anthropics; local=True",
+   "norm_label": "pdf"
+  },
+  {
+   "id": "skill_pptx",
+   "label": "pptx",
+   "type": "skill",
+   "content": "group=documents; source=anthropics; local=True",
+   "norm_label": "pptx"
+  },
+  {
+   "id": "skill_xlsx",
+   "label": "xlsx",
+   "type": "skill",
+   "content": "group=documents; source=anthropics; local=True",
+   "norm_label": "xlsx"
+  },
+  {
+   "id": "skill_context_router_maintenance",
+   "label": "context-router-maintenance",
+   "type": "skill",
+   "content": "group=agent-infra; source=local; local=True",
+   "norm_label": "context-router-maintenance"
+  },
+  {
+   "id": "skill_memory_knowledge_graph",
+   "label": "memory-knowledge-graph",
+   "type": "skill",
+   "content": "group=agent-infra; source=local; local=True",
+   "norm_label": "memory-knowledge-graph"
+  },
+  {
+   "id": "skill_codebase_graph",
+   "label": "codebase-graph",
+   "type": "skill",
+   "content": "group=agent-infra; source=local; local=True",
+   "norm_label": "codebase-graph"
+  },
+  {
+   "id": "skill_relocation_planning",
+   "label": "relocation-planning",
+   "type": "skill",
+   "content": "group=life-ops; source=local; local=True",
+   "norm_label": "relocation-planning"
+  },
+  {
+   "id": "skill_relocation_logistics",
+   "label": "relocation-logistics",
+   "type": "skill",
+   "content": "group=life-ops; source=local; local=True",
+   "norm_label": "relocation-logistics"
+  },
+  {
+   "id": "skill_rental_listing_verification",
+   "label": "rental-listing-verification",
+   "type": "skill",
+   "content": "group=life-ops; source=local; local=True",
+   "norm_label": "rental-listing-verification"
+  },
+  {
+   "id": "skill_host_security_monitoring",
+   "label": "host-security-monitoring",
+   "type": "skill",
+   "content": "group=security; source=local; local=True",
+   "norm_label": "host-security-monitoring"
+  },
+  {
+   "id": "skill_identity_monitoring",
+   "label": "identity-monitoring",
+   "type": "skill",
+   "content": "group=security; source=local; local=True",
+   "norm_label": "identity-monitoring"
+  },
+  {
+   "id": "skill_ecommerce_launch",
+   "label": "ecommerce-launch",
+   "type": "skill",
+   "content": "group=product; source=local; local=True",
+   "norm_label": "ecommerce-launch"
+  },
+  {
+   "id": "src_anthropics",
+   "label": "anthropics",
+   "type": "source",
+   "content": "Official Agent Skills reference set \u2014 https://github.com/anthropics/skills",
+   "norm_label": "anthropics"
+  },
+  {
+   "id": "src_superpowers",
+   "label": "superpowers",
+   "type": "source",
+   "content": "Agentic skills framework for software development \u2014 https://github.com/obra/superpowers",
+   "norm_label": "superpowers"
+  },
+  {
+   "id": "src_addyosmani",
+   "label": "addyosmani",
+   "type": "source",
+   "content": "Production-grade engineering skills \u2014 https://github.com/addyosmani/agent-skills",
+   "norm_label": "addyosmani"
+  },
+  {
+   "id": "src_composio",
+   "label": "composio",
+   "type": "source",
+   "content": "Curated index of community skills \u2014 https://github.com/ComposioHQ/awesome-claude-skills",
+   "norm_label": "composio"
+  },
+  {
+   "id": "src_voltagent",
+   "label": "voltagent",
+   "type": "source",
+   "content": "Large curated index of agent skills \u2014 https://github.com/VoltAgent/awesome-agent-skills",
+   "norm_label": "voltagent"
+  }
+ ],
+ "links": []
+}

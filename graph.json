@@ -1,0 +1,695 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {
+    "hyperedges": [
+      {
+        "id": "all_nodes",
+        "label": "All memory nodes",
+        "nodes": [
+          "example_memory_file_user_md",
+          "this_is_a_template_replace_the_bracketed_values_with_your_actual_data",
+          "user_profile",
+          "basics",
+          "traits",
+          "preferences",
+          "goals_short_term_1_3_months",
+          "goals_long_term_1_2_years",
+          "boundaries",
+          "assets",
+          "liabilities_constraints",
+          "user_mirror",
+          "corpus_graph",
+          "move_plan_ssot",
+          "income_bridge",
+          "table_of_contents",
+          "user_mirror_user_md",
+          "memory_ssot",
+          "environment",
+          "profile_infrastructure",
+          "memory_convention",
+          "ssh_lane",
+          "memory_graph",
+          "aspirations",
+          "move_target",
+          "tailnet",
+          "move_fund",
+          "memory_layer_ssot",
+          "example_memory_file_memory_ssot_md",
+          "memory_source_of_truth_ssot",
+          "audit_buckets"
+        ],
+        "relation": "related"
+      },
+      {
+        "id": "group_example_memory_file_user_md",
+        "nodes": [
+          "example_memory_file_user_md",
+          "this_is_a_template_replace_the_bracketed_values_with_your_actual_data",
+          "user_profile",
+          "basics",
+          "traits"
+        ],
+        "relation": "related"
+      },
+      {
+        "id": "group_preferences",
+        "nodes": [
+          "preferences",
+          "goals_short_term_1_3_months",
+          "goals_long_term_1_2_years",
+          "boundaries",
+          "assets"
+        ],
+        "relation": "related"
+      },
+      {
+        "id": "group_liabilities_constraints",
+        "nodes": [
+          "liabilities_constraints",
+          "user_mirror",
+          "corpus_graph",
+          "move_plan_ssot",
+          "income_bridge"
+        ],
+        "relation": "related"
+      },
+      {
+        "id": "group_table_of_contents",
+        "nodes": [
+          "table_of_contents",
+          "user_mirror_user_md",
+          "memory_ssot",
+          "environment",
+          "profile_infrastructure"
+        ],
+        "relation": "related"
+      },
+      {
+        "id": "group_memory_convention",
+        "nodes": [
+          "memory_convention",
+          "ssh_lane",
+          "memory_graph",
+          "aspirations",
+          "move_target"
+        ],
+        "relation": "related"
+      },
+      {
+        "id": "group_tailnet",
+        "nodes": [
+          "tailnet",
+          "move_fund",
+          "memory_layer_ssot",
+          "example_memory_file_memory_ssot_md",
+          "memory_source_of_truth_ssot"
+        ],
+        "relation": "related"
+      },
+      {
+        "id": "group_audit_buckets",
+        "nodes": [
+          "audit_buckets"
+        ],
+        "relation": "related"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "id": "example_memory_file_user_md",
+      "label": "Example Memory File - USER.md",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": null
+    },
+    {
+      "id": "this_is_a_template_replace_the_bracketed_values_with_your_actual_data",
+      "label": "This is a TEMPLATE. Replace the bracketed values with your actual data.",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": null
+    },
+    {
+      "id": "user_profile",
+      "label": "User Profile",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": null
+    },
+    {
+      "id": "basics",
+      "label": "Basics",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": "**Name:** [Your Name] **Birthday:** [YYYY/MM/DD] **Height:** [Your Height] **Gender:** [Your Gender] **Pronouns:** [Your Pronouns]"
+    },
+    {
+      "id": "traits",
+      "label": "Traits",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": "**Non-medicated ADHD** (or other traits you want to track) [Add other traits...]"
+    },
+    {
+      "id": "preferences",
+      "label": "Preferences",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": "**Communication Style:** [e.g., concise, technical, friendly] **Focus Areas:** [e.g., privacy, performance, cost-saving] **Learning Style:** [e.g., visual, hands-on, Socratic]"
+    },
+    {
+      "id": "goals_short_term_1_3_months",
+      "label": "Goals (Short-term: 1-3 months)",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": null
+    },
+    {
+      "id": "goals_long_term_1_2_years",
+      "label": "Goals (Long-term: 1-2 years)",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": null
+    },
+    {
+      "id": "boundaries",
+      "label": "Boundaries",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": "**What to Avoid:** [e.g., certain topics, data collection] **What to Prioritize:** [e.g., speed, accuracy, privacy]"
+    },
+    {
+      "id": "assets",
+      "label": "Assets",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": "**Hardware:** [e.g., Dell laptop, Canon camera] **Software:** [e.g., VS Code, Obsidian] **Skills:** [e.g., Python, photography, drone piloting]"
+    },
+    {
+      "id": "liabilities_constraints",
+      "label": "Liabilities / Constraints",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": "**Budget:** $[Amount] per month **Time:** [Available hours] per week **Other:** [Any constraints]  Last Updated: [YYYY-MM-DD]*"
+    },
+    {
+      "id": "user_mirror",
+      "label": "User Mirror",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": "Example reference for User Mirror Example reference for User Mirror"
+    },
+    {
+      "id": "corpus_graph",
+      "label": "Corpus Graph",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": "Example reference for Corpus Graph Example reference for Corpus Graph"
+    },
+    {
+      "id": "move_plan_ssot",
+      "label": "Move Plan (SSOT)",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": "Example reference for Move Plan (SSOT) Example reference for Move Plan (SSOT)"
+    },
+    {
+      "id": "income_bridge",
+      "label": "Income Bridge",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": "Example reference for Income Bridge Example reference for Income Bridge"
+    },
+    {
+      "id": "table_of_contents",
+      "label": "Table of Contents",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": "Example reference for Table of Contents Example reference for Table of Contents"
+    },
+    {
+      "id": "user_mirror_user_md",
+      "label": "User Mirror (USER.md)",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": "Example reference for User Mirror (USER.md) Example reference for User Mirror (USER.md)"
+    },
+    {
+      "id": "memory_ssot",
+      "label": "Memory SSOT",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": "Example reference for Memory SSOT Example reference for Memory SSOT"
+    },
+    {
+      "id": "environment",
+      "label": "Environment",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": "Example reference for Environment"
+    },
+    {
+      "id": "profile_infrastructure",
+      "label": "Profile & Infrastructure",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": "Example reference for Profile & Infrastructure Example reference for Profile & Infrastructure"
+    },
+    {
+      "id": "memory_convention",
+      "label": "Memory Convention",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": "Example reference for Memory Convention Example reference for Memory Convention"
+    },
+    {
+      "id": "ssh_lane",
+      "label": "SSH Lane",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": "Example reference for SSH Lane Example reference for SSH Lane"
+    },
+    {
+      "id": "memory_graph",
+      "label": "Memory Graph",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": "Example reference for Memory Graph Example reference for Memory Graph"
+    },
+    {
+      "id": "aspirations",
+      "label": "Aspirations",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": "Example reference for Aspirations"
+    },
+    {
+      "id": "move_target",
+      "label": "Move Target",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": "Example reference for Move Target Example reference for Move Target"
+    },
+    {
+      "id": "tailnet",
+      "label": "Tailnet",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": "Example reference for Tailnet Example reference for Tailnet"
+    },
+    {
+      "id": "move_fund",
+      "label": "Move Fund",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": "Example reference for Move Fund Example reference for Move Fund"
+    },
+    {
+      "id": "memory_layer_ssot",
+      "label": "Memory Layer SSOT",
+      "type": "memory_node",
+      "source_file": "example-USER.md",
+      "rationale": "Example reference for Memory Layer SSOT Example reference for Memory Layer SSOT"
+    },
+    {
+      "id": "example_memory_file_memory_ssot_md",
+      "label": "Example Memory File - MEMORY-SSOT.md",
+      "type": "memory_node",
+      "source_file": "example-MEMORY-SSOT.md",
+      "rationale": null
+    },
+    {
+      "id": "memory_source_of_truth_ssot",
+      "label": "Memory Source of Truth (SSOT)",
+      "type": "memory_node",
+      "source_file": "example-MEMORY-SSOT.md",
+      "rationale": null
+    },
+    {
+      "id": "audit_buckets",
+      "label": "Audit Buckets",
+      "type": "memory_node",
+      "source_file": "example-MEMORY-SSOT.md",
+      "rationale": "Name, Birthday, Location, Contact Info Replace with your actual data Short-term objectives (1-3 months) Long-term objectives (1-2 years) Replace with your actual goals Hardware (laptop, camera, drone, etc.) Software stack (languages, tools, services) Replace with your actual environment Career / Learning goals Personal milestones Replace with your actual aspirations Traits, preferences, boundaries Assets, liabilities, constraints Replace with your actual details  Last Updated: [YYYY-MM-DD]*"
+    }
+  ],
+  "links": [
+    {
+      "source": "example_memory_file_user_md",
+      "target": "this_is_a_template_replace_the_bracketed_values_with_your_actual_data"
+    },
+    {
+      "source": "this_is_a_template_replace_the_bracketed_values_with_your_actual_data",
+      "target": "user_profile"
+    },
+    {
+      "source": "user_profile",
+      "target": "basics"
+    },
+    {
+      "source": "basics",
+      "target": "traits"
+    },
+    {
+      "source": "traits",
+      "target": "preferences"
+    },
+    {
+      "source": "preferences",
+      "target": "goals_short_term_1_3_months"
+    },
+    {
+      "source": "goals_short_term_1_3_months",
+      "target": "goals_long_term_1_2_years"
+    },
+    {
+      "source": "goals_long_term_1_2_years",
+      "target": "boundaries"
+    },
+    {
+      "source": "boundaries",
+      "target": "assets"
+    },
+    {
+      "source": "assets",
+      "target": "liabilities_constraints"
+    },
+    {
+      "source": "liabilities_constraints",
+      "target": "user_mirror"
+    },
+    {
+      "source": "user_mirror",
+      "target": "corpus_graph"
+    },
+    {
+      "source": "corpus_graph",
+      "target": "move_plan_ssot"
+    },
+    {
+      "source": "move_plan_ssot",
+      "target": "income_bridge"
+    },
+    {
+      "source": "income_bridge",
+      "target": "table_of_contents"
+    },
+    {
+      "source": "table_of_contents",
+      "target": "user_mirror_user_md"
+    },
+    {
+      "source": "user_mirror_user_md",
+      "target": "memory_ssot"
+    },
+    {
+      "source": "memory_ssot",
+      "target": "environment"
+    },
+    {
+      "source": "environment",
+      "target": "profile_infrastructure"
+    },
+    {
+      "source": "profile_infrastructure",
+      "target": "memory_convention"
+    },
+    {
+      "source": "memory_convention",
+      "target": "ssh_lane"
+    },
+    {
+      "source": "ssh_lane",
+      "target": "memory_graph"
+    },
+    {
+      "source": "memory_graph",
+      "target": "aspirations"
+    },
+    {
+      "source": "aspirations",
+      "target": "move_target"
+    },
+    {
+      "source": "move_target",
+      "target": "tailnet"
+    },
+    {
+      "source": "tailnet",
+      "target": "move_fund"
+    },
+    {
+      "source": "move_fund",
+      "target": "memory_layer_ssot"
+    },
+    {
+      "source": "memory_layer_ssot",
+      "target": "example_memory_file_memory_ssot_md"
+    },
+    {
+      "source": "example_memory_file_memory_ssot_md",
+      "target": "memory_source_of_truth_ssot"
+    },
+    {
+      "source": "memory_source_of_truth_ssot",
+      "target": "audit_buckets"
+    }
+  ],
+  "edges": [
+    {
+      "source": "example_memory_file_user_md",
+      "target": "this_is_a_template_replace_the_bracketed_values_with_your_actual_data"
+    },
+    {
+      "source": "this_is_a_template_replace_the_bracketed_values_with_your_actual_data",
+      "target": "user_profile"
+    },
+    {
+      "source": "user_profile",
+      "target": "basics"
+    },
+    {
+      "source": "basics",
+      "target": "traits"
+    },
+    {
+      "source": "traits",
+      "target": "preferences"
+    },
+    {
+      "source": "preferences",
+      "target": "goals_short_term_1_3_months"
+    },
+    {
+      "source": "goals_short_term_1_3_months",
+      "target": "goals_long_term_1_2_years"
+    },
+    {
+      "source": "goals_long_term_1_2_years",
+      "target": "boundaries"
+    },
+    {
+      "source": "boundaries",
+      "target": "assets"
+    },
+    {
+      "source": "assets",
+      "target": "liabilities_constraints"
+    },
+    {
+      "source": "liabilities_constraints",
+      "target": "user_mirror"
+    },
+    {
+      "source": "user_mirror",
+      "target": "corpus_graph"
+    },
+    {
+      "source": "corpus_graph",
+      "target": "move_plan_ssot"
+    },
+    {
+      "source": "move_plan_ssot",
+      "target": "income_bridge"
+    },
+    {
+      "source": "income_bridge",
+      "target": "table_of_contents"
+    },
+    {
+      "source": "table_of_contents",
+      "target": "user_mirror_user_md"
+    },
+    {
+      "source": "user_mirror_user_md",
+      "target": "memory_ssot"
+    },
+    {
+      "source": "memory_ssot",
+      "target": "environment"
+    },
+    {
+      "source": "environment",
+      "target": "profile_infrastructure"
+    },
+    {
+      "source": "profile_infrastructure",
+      "target": "memory_convention"
+    },
+    {
+      "source": "memory_convention",
+      "target": "ssh_lane"
+    },
+    {
+      "source": "ssh_lane",
+      "target": "memory_graph"
+    },
+    {
+      "source": "memory_graph",
+      "target": "aspirations"
+    },
+    {
+      "source": "aspirations",
+      "target": "move_target"
+    },
+    {
+      "source": "move_target",
+      "target": "tailnet"
+    },
+    {
+      "source": "tailnet",
+      "target": "move_fund"
+    },
+    {
+      "source": "move_fund",
+      "target": "memory_layer_ssot"
+    },
+    {
+      "source": "memory_layer_ssot",
+      "target": "example_memory_file_memory_ssot_md"
+    },
+    {
+      "source": "example_memory_file_memory_ssot_md",
+      "target": "memory_source_of_truth_ssot"
+    },
+    {
+      "source": "memory_source_of_truth_ssot",
+      "target": "audit_buckets"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "all_nodes",
+      "label": "All memory nodes",
+      "nodes": [
+        "example_memory_file_user_md",
+        "this_is_a_template_replace_the_bracketed_values_with_your_actual_data",
+        "user_profile",
+        "basics",
+        "traits",
+        "preferences",
+        "goals_short_term_1_3_months",
+        "goals_long_term_1_2_years",
+        "boundaries",
+        "assets",
+        "liabilities_constraints",
+        "user_mirror",
+        "corpus_graph",
+        "move_plan_ssot",
+        "income_bridge",
+        "table_of_contents",
+        "user_mirror_user_md",
+        "memory_ssot",
+        "environment",
+        "profile_infrastructure",
+        "memory_convention",
+        "ssh_lane",
+        "memory_graph",
+        "aspirations",
+        "move_target",
+        "tailnet",
+        "move_fund",
+        "memory_layer_ssot",
+        "example_memory_file_memory_ssot_md",
+        "memory_source_of_truth_ssot",
+        "audit_buckets"
+      ],
+      "relation": "related"
+    },
+    {
+      "id": "group_example_memory_file_user_md",
+      "nodes": [
+        "example_memory_file_user_md",
+        "this_is_a_template_replace_the_bracketed_values_with_your_actual_data",
+        "user_profile",
+        "basics",
+        "traits"
+      ],
+      "relation": "related"
+    },
+    {
+      "id": "group_preferences",
+      "nodes": [
+        "preferences",
+        "goals_short_term_1_3_months",
+        "goals_long_term_1_2_years",
+        "boundaries",
+        "assets"
+      ],
+      "relation": "related"
+    },
+    {
+      "id": "group_liabilities_constraints",
+      "nodes": [
+        "liabilities_constraints",
+        "user_mirror",
+        "corpus_graph",
+        "move_plan_ssot",
+        "income_bridge"
+      ],
+      "relation": "related"
+    },
+    {
+      "id": "group_table_of_contents",
+      "nodes": [
+        "table_of_contents",
+        "user_mirror_user_md",
+        "memory_ssot",
+        "environment",
+        "profile_infrastructure"
+      ],
+      "relation": "related"
+    },
+    {
+      "id": "group_memory_convention",
+      "nodes": [
+        "memory_convention",
+        "ssh_lane",
+        "memory_graph",
+        "aspirations",
+        "move_target"
+      ],
+      "relation": "related"
+    },
+    {
+      "id": "group_tailnet",
+      "nodes": [
+        "tailnet",
+        "move_fund",
+        "memory_layer_ssot",
+        "example_memory_file_memory_ssot_md",
+        "memory_source_of_truth_ssot"
+      ],
+      "relation": "related"
+    },
+    {
+      "id": "group_audit_buckets",
+      "nodes": [
+        "audit_buckets"
+      ],
+      "relation": "related"
+    }
+  ]
+}

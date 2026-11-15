@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lucky-engine"
+version = "1.6.0"
+description = "Local-first deterministic context router, gateway, and graph-memory bridge for LLM agents (stdlib-only core)."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+# Optional harness/cloud connectors (never imported by stdlib core)
+eval = []
+firebase = [
+  "firebase-admin>=6.0.0",
+]
+gcp = [
+  "google-cloud-bigquery>=3.0.0",
+  "google-cloud-dataplex>=2.0.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["bridge/tests"]

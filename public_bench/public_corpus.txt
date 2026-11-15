@@ -1,0 +1,47 @@
+# Public skill catalog v1.5.0
+
+## Sources
+- anthropics: Official Agent Skills reference set (https://github.com/anthropics/skills)
+- superpowers: Agentic skills framework for software development (https://github.com/obra/superpowers)
+- addyosmani: Production-grade engineering skills (https://github.com/addyosmani/agent-skills)
+- composio: Curated index of community skills (https://github.com/ComposioHQ/awesome-claude-skills)
+- voltagent: Large curated index of agent skills (https://github.com/VoltAgent/awesome-agent-skills)
+
+## Skills
+- brainstorming [group=planning source=superpowers local=True]
+- writing-plans [group=planning source=superpowers local=True]
+- executing-plans [group=planning source=superpowers local=True]
+- spec-driven-development [group=planning source=addyosmani local=True]
+- context-engineering [group=planning source=addyosmani local=False]
+- test-driven-development [group=build source=superpowers local=True]
+- incremental-implementation [group=build source=addyosmani local=True]
+- systematic-debugging [group=build source=superpowers local=True]
+- verification-before-completion [group=build source=superpowers local=True]
+- code-review-and-quality [group=review source=addyosmani local=True]
+- requesting-code-review [group=review source=superpowers local=True]
+- receiving-code-review [group=review source=superpowers local=True]
+- using-git-worktrees [group=vcs source=superpowers local=True]
+- finishing-a-development-branch [group=vcs source=superpowers local=True]
+- dispatching-parallel-agents [group=orchestration source=superpowers local=True]
+- subagent-driven-development [group=orchestration source=superpowers local=True]
+- documentation-and-adrs [group=docs source=addyosmani local=True]
+- writing-skills [group=meta source=superpowers local=True]
+- using-superpowers [group=meta source=superpowers local=True]
+- skill-creator [group=meta source=anthropics local=False]
+- mcp-builder [group=meta source=anthropics local=False]
+- webapp-testing [group=quality source=anthropics local=False]
+- artifacts-builder [group=frontend source=anthropics local=False]
+- canvas-design [group=design source=anthropics local=False]
+- docx [group=documents source=anthropics local=True]
+- pdf [group=documents source=anthropics local=True]
+- pptx [group=documents source=anthropics local=True]
+- xlsx [group=documents source=anthropics local=True]
+- context-router-maintenance [group=agent-infra source=local local=True]
+- memory-knowledge-graph [group=agent-infra source=local local=True]
+- codebase-graph [group=agent-infra source=local local=True]
+- relocation-planning [group=life-ops source=local local=True]
+- relocation-logistics [group=life-ops source=local local=True]
+- rental-listing-verification [group=life-ops source=local local=True]
+- host-security-monitoring [group=security source=local local=True]
+- identity-monitoring [group=security source=local local=True]
+- ecommerce-launch [group=product source=local local=True]
