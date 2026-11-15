@@ -22,12 +22,9 @@ an artifact validated, not a confident sentence.
 
 ```
 README.md          this file — proposal, status, roadmap
-ANALYSIS.md        measured session data -> findings -> optimizations (and rejections)
-BOOST-1.5.md       the customized /boost: 8 pillars, phase grammar, 9-gate checklist
 CHAIN-MAP.md       the 5 roots + fallback: node tables, triggers, loop contracts
 chains.yaml        chains: judged loops + gateways + urgency tiers (the config)
 GATEWAY.md         the gateway protocol: judges, outcomes, point budget, escalation
-PUBLIC-CATALOG.md  public-safe skill inventory + naming contract
 public/            publishable slice (catalog.json)
 check_public.py    publication gate: fails on leaked identifiers
 test_public.py     proves the gate catches real leaks
@@ -36,7 +33,6 @@ test_router.py     142 executable gates (run it, don't trust this README)
 gateway.py         urgency-tiered gateway ledger & deterministic artifact verifier
 test_gateway.py    174 executable gates (disk verification + retry headroom)
 segments/*.md      26 node cards, each <=350 tokens, one job each
-RESUME-EVIDENCE.md agentic + MLDevSecOps framing with the metrics attached
 ```
 
 ## Quickstart

@@ -60,8 +60,8 @@ def node_plan(chain, tier="exploratory"):
 
 PRIMARY_DOMAIN_TERMS = {
     "research report", "cited", "citation", "report",
-    "failing tests", "failing test", "refactor",
-    "threat model", "security review", "posture review",
+    "failing tests", "failing test", "refactor", "production outage",
+    "threat model", "security review", "posture review", "posture report", "security gaps",
     "apartment", "relocate", "relocation", "rental", "skill",
 }
 
@@ -75,6 +75,13 @@ STEM_MAP = {
     "report": ["report", "reports", "reporting"],
     "research": ["research", "researching", "researcher"],
     "audit": ["audit", "auditing", "audited"],
+    "threat": ["threat", "threats"],
+    "gap": ["gap", "gaps"],
+    "vuln": ["vuln", "vulns", "vulnerability", "vulnerabilities"],
+    "debug": ["debug", "debugging", "debugged"],
+    "outage": ["outage", "outages"],
+    "error": ["error", "errors"],
+    "incident": ["incident", "incidents"],
 }
 
 

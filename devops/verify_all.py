@@ -10,10 +10,12 @@ ROOT = Path(__file__).resolve().parent.parent
 CHECKS = [
     ("Layer 2: test_router.py", [sys.executable, "test_router.py"], ROOT),
     ("Layer 2: test_gateway.py", [sys.executable, "test_gateway.py"], ROOT),
+    ("Bandit: test_bandit.py", [sys.executable, "test_bandit.py"], ROOT),
     ("Layer 1: bridge/test_suite.py", [sys.executable, "test_suite.py"], ROOT / "bridge"),
     ("Layer 1: bridge unittest", [sys.executable, "-m", "unittest", "discover", "-s", "tests"], ROOT / "bridge"),
     ("Layer 1: bridge/eval/runner.py", [sys.executable, "eval/runner.py"], ROOT / "bridge"),
     ("Eval: evals/routing.py", [sys.executable, "evals/routing.py"], ROOT),
+    ("Eval: evals/stochastic_ablation.py", [sys.executable, "evals/stochastic_ablation.py"], ROOT),
     ("Eval: harness axis1", [sys.executable, "harness/run_experiment.py", "--axis1"], ROOT),
     ("Eval: harness axis2 local", [sys.executable, "harness/run_experiment.py", "--axis2", "local"], ROOT),
     ("Public Gate: public/", [sys.executable, "check_public.py", "--path", "public/"], ROOT),

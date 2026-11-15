@@ -1,0 +1,4 @@
+OpenAlex Terms & License Notification
+Recorded: 2026-11-15T01:31:00-07:00
+Terms: https://help.openalex.org/
+Note: Always verify the license of individual papers retrieved via OpenAlex for any restrictions.

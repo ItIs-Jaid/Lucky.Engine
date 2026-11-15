@@ -408,6 +408,48 @@ def get_connected_nodes(graph: dict, node_id: str, edge_limit: int = 3) -> list:
     return connected
 
 
+def ppr_rank(graph: dict, bridge_edges: list, seed_ids: list, alpha: float = 0.85, iters: int = 10) -> dict:
+    """Pure-stdlib Personalized PageRank (HippoRAG-inspired) over graph + bridge edges."""
+    seeds = [s for s in (seed_ids or []) if s is not None]
+    if not seeds:
+        return {}
+    adj = {}
+    def _link(a, b):
+        if a is None or b is None or a == b:
+            return
+        adj.setdefault(a, set()).add(b)
+        adj.setdefault(b, set()).add(a)
+
+    for e in (graph.get("edges", []) or graph.get("links", []) or []):
+        _link(e.get("source"), e.get("target"))
+    for e in (bridge_edges or []):
+        _link(e.get("source"), e.get("target"))
+    hypers = graph.get("hyperedges") or (graph.get("graph", {}) or {}).get("hyperedges", []) or []
+    for edge in hypers:
+        nids = edge.get("nodes") or []
+        if len(nids) <= 10:
+            for i in range(len(nids)):
+                for j in range(i + 1, len(nids)):
+                    _link(nids[i], nids[j])
+
+    if not adj:
+        return {}
+    seed_w = 1.0 / len(seeds)
+    pers = {s: seed_w for s in seeds}
+    ranks = dict(pers)
+    for _ in range(max(1, iters)):
+        nxt = {s: (1.0 - alpha) * w for s, w in pers.items()}
+        for u, r_u in ranks.items():
+            nbrs = adj.get(u)
+            if not nbrs:
+                continue
+            share = alpha * r_u / len(nbrs)
+            for v in nbrs:
+                nxt[v] = nxt.get(v, 0.0) + share
+        ranks = nxt
+    return ranks
+
+
 def extract_intent(query: str) -> str:
     """Extract primary intent from query using LLM when available, keyword fallback."""
     # Check for LLM API key
@@ -741,15 +783,19 @@ def resolve_query(query, budget=None, edge_limit=3):
                 expanded_nodes.add(conn_id)
                 edges_followed += 1
 
+    ppr_scores = ppr_rank(graph, load_bridge_edges(), list(matched_ids)) if expanded_nodes else {}
+    max_ppr = max((ppr_scores.get(nid, 0.0) for nid in expanded_nodes), default=0.0)
     for node in graph.get("nodes", []):
         if node.get("id") in expanded_nodes:
             nid = node.get("id")
             if nid not in matched_ids:
+                rel = (ppr_scores.get(nid, 0.0) / max_ppr) if max_ppr > 0 else 0.2
+                conf = round(0.55 + 0.24 * min(1.0, rel), 3)
                 matched.append({
                     "id": nid,
                     "label": node.get("label"),
                     "type": node.get("type"),
-                    "confidence": 0.6,
+                    "confidence": conf,
                     "source": "edge_expansion",
                     "content": _short_content(node),
                 })

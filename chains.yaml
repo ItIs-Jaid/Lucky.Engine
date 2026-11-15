@@ -57,7 +57,7 @@ chains:
 
   - id: delegated-build
     root: R-DELEGATED-BUILD
-    keywords: [build, implement, refactor, feature, fix, code, test]
+    keywords: [build, implement, refactor, feature, fix, code, test, debug, outage, production, bug, error]
     when:
       any: [subagent-delegation, subagent-driven-development, agentic-teams, multi-tier-agentic-build]
       count_gte: 3
@@ -202,7 +202,7 @@ chains:
 
   - id: security-review
     root: R-SECURITY-POSTURE
-    keywords: [security, defend, monitor, threat, vuln, harden, incident]
+    keywords: [security, defend, monitor, threat, vuln, harden, incident, posture, firewall, homelab, gap]
     when:
       any: [host-security-monitoring, identity-monitoring, cyber-defense-tools, oss-forensics, cisa-kev-briefing]
       count_gte: 3

@@ -45,7 +45,6 @@ Verify Layer 2: `md5sum chains.yaml router.py gateway.py check_public.py test_ro
 - **bridge_nodes.json** + **test_suite.py** are absent from the public mirror. Add them only if the public repo should carry them (they reference private memory paths; sanitize first).
 
 ## Related
-- [[04-AI-Engineering-and-Agents/Lucky Engine|Lucky Engine note]] · [[projects/lucky-engine-1.5.0/README|README]] · [[projects/lucky-engine-1.5.0/INDEX|Index]] · [[projects/PROJECTS HUB|PROJECTS HUB]] · [[memory/MEMORY INDEX|Memory Hub]]
-
----
-_Back to [[Atlas — Vault Map]]._
+- `README.md` — proposal, status, roadmap
+- `CHAIN-MAP.md` — the 5 roots + fallback
+- `GATEWAY.md` — gateway protocol
